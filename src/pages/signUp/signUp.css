@@ -1,0 +1,7 @@
+.signup-container {
+    /* Define a fixed height for the container */
+    height: 90vh; /* Adjust the height to your preference */
+  
+    /* Allow vertical scrolling when the content overflows the container */
+    overflow-y: auto;
+  }
