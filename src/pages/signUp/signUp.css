@@ -1,11 +1,11 @@
 .signup-container {
-    height: 90vh; 
-    overflow-y: auto;
+  height: 90vh; 
+  overflow-y: auto;
 }
 
 input:focus:not([read-only]) {
-	border-bottom: none!important;
-	box-shadow: none!important;	
+	border-bottom: none !important;
+	box-shadow: none !important;	
 }
 
 input {
@@ -15,6 +15,5 @@ input {
 button:focus,
 button:active,
 button:hover {
-  background-color: rgb(77, 77, 180) !important; /* Set the same color as the default */
-  /* Other styles as needed */
+  background-color: rgb(77, 77, 180) !important;   
 }
