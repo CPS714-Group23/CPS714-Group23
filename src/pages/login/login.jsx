@@ -7,6 +7,7 @@ import FormLabel from '@mui/joy/FormLabel';
 import Input from '@mui/joy/Input';
 import Button from '@mui/joy/Button';
 import Link from '@mui/joy/Link';
+import './login.css';
 
 export default function Login() {
   return (
@@ -50,7 +51,7 @@ export default function Login() {
                 placeholder="Your Password"
               />
             </FormControl>
-            <Button sx={{ mt: 1 }}>Log In</Button>
+            <Button sx={{mt: 1, backgroundColor: 'rgb(77, 77, 180)', color: 'white'  }}>Log In</Button>
             <Typography
               endDecorator={<Link href="/signup">Don't have an account? Sign up here</Link>}
               fontSize="sm"

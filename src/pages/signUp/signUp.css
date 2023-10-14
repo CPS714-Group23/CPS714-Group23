@@ -1,7 +1,20 @@
 .signup-container {
-    /* Define a fixed height for the container */
-    height: 90vh; /* Adjust the height to your preference */
-  
-    /* Allow vertical scrolling when the content overflows the container */
+    height: 90vh; 
     overflow-y: auto;
-  }
+}
+
+input:focus:not([read-only]) {
+	border-bottom: none!important;
+	box-shadow: none!important;	
+}
+
+input {
+	border-bottom: none !important;
+}
+
+button:focus,
+button:active,
+button:hover {
+  background-color: rgb(77, 77, 180) !important; /* Set the same color as the default */
+  /* Other styles as needed */
+}
