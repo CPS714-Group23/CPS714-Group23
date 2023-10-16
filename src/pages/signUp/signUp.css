@@ -1,0 +1,19 @@
+.signup-container {
+  height: 90vh; 
+  overflow-y: auto;
+}
+
+input:focus:not([read-only]) {
+  border-bottom: none !important;
+  box-shadow: none !important;	
+}
+
+input {
+  border-bottom: none !important;
+}
+
+button:focus,
+button:active,
+button:hover {
+  background-color: rgb(77, 77, 180) !important;   
+}
