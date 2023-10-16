@@ -4,12 +4,12 @@
 }
 
 input:focus:not([read-only]) {
-	border-bottom: none !important;
-	box-shadow: none !important;	
+  border-bottom: none !important;
+  box-shadow: none !important;	
 }
 
 input {
-	border-bottom: none !important;
+  border-bottom: none !important;
 }
 
 button:focus,

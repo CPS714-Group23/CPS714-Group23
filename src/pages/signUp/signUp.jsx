@@ -16,6 +16,7 @@ export default function SignUp() {
     dob: '',
     address: '',
     postalCode: '',
+    city: '', 
     country: '',
     stateProvince: '',
     phoneNumber: '',
@@ -38,6 +39,7 @@ export default function SignUp() {
         regex: /^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/,
         errorMessage: 'Invalid postal code format (e.g., S3D 4T6)',
       },
+      city: { required: true },
       email: {
         required: true,
         regex: /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/,
@@ -183,6 +185,19 @@ export default function SignUp() {
                 onChange={handleChange}
               />
               <Typography style={{ color: 'red' }} fontSize="sm">{errorMessages.postalCode}</Typography>
+            </FormControl>
+            <FormControl>
+              <FormLabel>City</FormLabel>
+              <Input
+                name="city"
+                type="text"
+                placeholder="Your City"
+                value={formData.city}
+                onChange={handleChange}
+              />
+              <Typography style={{ color: 'red' }} fontSize="sm">
+                {errorMessages.city}
+              </Typography>
             </FormControl>
             <FormControl>
               <FormLabel>Country</FormLabel>
