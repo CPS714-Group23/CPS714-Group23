@@ -2,6 +2,7 @@
   "name": "pharmaceutical-portal",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:3001",
   "dependencies": {
     "@mui/joy": "^5.0.0-beta.10",
     "@mui/material": "^5.14.12",
