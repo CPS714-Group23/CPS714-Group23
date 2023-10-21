@@ -1,11 +1,6 @@
 .navbar {
-  background: linear-gradient(to right, #514c42, #948542);
-  position: fixed;
+  position: sticky;
   width: 100%;
-  padding: 8px 0;
-}
-  
-.toolbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -15,8 +10,40 @@
   display: flex;
   align-items: center;
 }
+
+#logoButton {
+    font-size: 1.7em;
+    font-family: 'Playfair Display';
+    font-weight: 600;
+    color: #7B9B69;
+    text-transform: none
+}
   
 .right-nav {
   display: flex; 
   align-items: center;
+}
+
+.right-nav a {
+    font-size: 1em;
+    margin-left: 1.4em;
+    padding: 0;
+    font-family: Montserrat;
+    color: #7B9B69;
+    text-transform: none;
+}
+
+.right-nav #logInButton {
+    display: block;
+    outline: 1px solid #7B9B69;
+    border-radius: 20px;
+    padding: .15em 1.4em;
+}
+
+.right-nav #registerButton {
+    color: #FFF;
+    display: block;
+    background-color: #7B9B69;
+    border-radius: 20px;
+    padding: .15em 1.4em;
 }
