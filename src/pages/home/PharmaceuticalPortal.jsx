@@ -11,7 +11,7 @@ const PharmaceuticalPortal = () => {
       <Grid item lg={5} className='content'>
           <h1 className="message-text">Discover a community that supports you in your pharmaceutical journey.</h1>
           <p className="slogan-text">Connect. Share. Learn Together.</p>         
-          <Button component={Link} to="/login" id='getHelpButton'>
+          <Button component={Link} to="/signup" id='getHelpButton'>
             Get Help Today
           </Button>
       </Grid>
