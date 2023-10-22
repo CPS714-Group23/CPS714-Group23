@@ -1,19 +1,89 @@
-.signup-container {
-  height: 90vh; 
-  overflow-y: auto;
+.square {
+  background-color: #7B9B69;
+  width: 489%;
+  height: 80vh;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+  position: absolute;
+  left: -500%;
+}
+
+.grid-container {
+  align-items: center;
+  max-width: 700px;
+  margin: auto;
+  transform: translateX(40%);
+  margin-bottom: 20px;
+  margin-top: 40px; 
+}
+
+.form-group {
+  margin-bottom: 20px;
+  width: 90%
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+input::placeholder {
+  color: #acacac;
+}
+
+button {
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
 }
 
 input:focus:not([read-only]) {
-  border-bottom: none !important;
-  box-shadow: none !important;	
+  box-shadow: none !important;
 }
 
-input {
-  border-bottom: none !important;
+@media (min-width: 0px) and (max-width: 600px) {
+  .square {
+    background-color: #7B9B69;
+    width: 800%;
+    height: 80vh;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    position: fixed;
+    left: -810%;
+  }
+  
+  .grid-container {
+    align-items: center;
+    max-width: 700px;
+    margin: auto;
+    transform: translateX(20%);
+    margin-bottom: 20px;
+    margin-top: 40px; 
+  }
+  
+  input::placeholder {
+    font-size: 9px;
+  }
 }
 
-button:focus,
-button:active,
-button:hover {
-  background-color: rgb(77, 77, 180) !important;   
+@media (min-width: 600px) and (max-width: 1200px) {
+  .square {
+    background-color: #7B9B69;
+    width: 490%;
+    height: 80vh;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    position: fixed;
+    left: -500%;
+  }
+  
+  .grid-container {
+    align-items: center;
+    max-width: 700px;
+    margin: auto;
+    transform: translateX(20%);
+    margin-bottom: 20px;
+    margin-top: 40px; 
+  }
 }

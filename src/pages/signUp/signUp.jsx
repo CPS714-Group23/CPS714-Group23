@@ -1,74 +1,26 @@
-import { useState } from 'react';
-import { CssVarsProvider } from '@mui/joy/styles';
-import Sheet from '@mui/joy/Sheet';
-import Typography from '@mui/joy/Typography';
-import FormControl from '@mui/joy/FormControl';
-import FormLabel from '@mui/joy/FormLabel';
-import Input from '@mui/joy/Input';
-import Button from '@mui/joy/Button';
-import Link from '@mui/joy/Link';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import './signUp.css';
 
-export default function SignUp() {
-  const initialFormData = {
+function SignUp() {
+  const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
-    dob: '',
-    address: '',
-    postalCode: '',
-    city: '', 
-    country: '',
-    stateProvince: '',
-    phoneNumber: '',
+    gender: '',
+    homeAddress: '',
+    dateOfBirth: '',
+    phone: '',
     email: '',
     password: '',
-    reenterPassword: '',
-  };
+    confirmPassword: '',
+  });
 
-  const [formData, setFormData] = useState(initialFormData);
-  const [errorMessages, setErrorMessages] = useState({ ...initialFormData });
+  const [requiredFields] = useState([
+    'firstName', 'lastName', 'gender', 'homeAddress', 'dateOfBirth', 'phone', 'email', 'password', 'confirmPassword'
+  ]);
 
-  const validateField = (field, value) => {
-    const validationRules = {
-      firstName: { required: true },
-      lastName: { required: true },
-      dob: { required: true },
-      address: { required: true },
-      postalCode: {
-        required: true,
-        regex: /^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/,
-        errorMessage: 'Invalid postal code format (e.g., S3D 4T6)',
-      },
-      city: { required: true },
-      email: {
-        required: true,
-        regex: /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/,
-        errorMessage: 'Invalid email address',
-      },
-      password: {
-        required: true,
-        regex: /.{8,}/,
-        errorMessage: 'Password must be at least 8 characters long',
-      },
-      reenterPassword: { required: true },
-      country: { required: true },
-      stateProvince: { required: true },
-      phoneNumber: {
-        required: true,
-        regex: /^\d{3}-\d{3}-\d{4}$/,
-        errorMessage: 'Invalid phone number format (e.g., 456-454-4545)',
-      },
-    };
-
-    if (validationRules[field].required && !value) {
-      return `${field} is required`;
-    }
-
-    if (validationRules[field].regex && !validationRules[field].regex.test(value)) {
-      return validationRules[field].errorMessage;
-    }
-
-    return '';
+  const isFieldEmpty = (field) => {
+    return field === '';
   };
 
   const handleChange = (e) => {
@@ -77,205 +29,252 @@ export default function SignUp() {
       ...formData,
       [name]: value,
     });
-    setErrorMessages({
-      ...errorMessages,
-      [name]: validateField(name, value),
-    });
   };
 
-  const handleSubmit = () => {
-    let hasErrors = false;
-    const newErrorMessages = { ...initialFormData };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const areRequiredFieldsFilled = requiredFields.every(field => !isFieldEmpty(formData[field]));
 
-    for (const field in formData) {
-      const errorMessage = validateField(field, formData[field]);
-      newErrorMessages[field] = errorMessage;
-      if (errorMessage) {
-        hasErrors = true;
-      }
-    }
-
-    if (formData.password !== formData.reenterPassword) {
-      newErrorMessages.reenterPassword = 'Passwords do not match';
-      hasErrors = true;
-    }
-
-    setErrorMessages(newErrorMessages);
-
-    if (!hasErrors) {
-      console.log(formData);
+    if (areRequiredFieldsFilled) {
+      console.log(formData); // Log the form data to the console for testing 
+      setFormData({
+        firstName: '',
+        lastName: '',
+        gender: '',
+        homeAddress: '',
+        dateOfBirth: '',
+        phone: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+      });
     }
   };
 
   return (
-    <CssVarsProvider>
-      <main>
-        <div className="signup-container">
-          <Sheet
-            sx={{
-              width: 300,
-              mx: 'auto',
-              my: 7,
-              py: 3,
-              px: 2,
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 2,
-              borderRadius: 'md',
-              boxShadow: 'md',
-            }}
-            variant="outlined"
-          >
-            <div>
-              <Typography level="h4" component="h1">
-                <b>Welcome!</b>
-              </Typography>
-              <Typography level="body-sm">Sign up to get started.</Typography>
-            </div>
-            <FormControl>
-              <FormLabel>First Name</FormLabel>
-              <Input
-                name="firstName"
+    <div className="grid-container">
+      <div className="square"></div>
+      <form onSubmit={handleSubmit}>
+        <p style={{ textAlign: 'center', color: '#7B9B69', fontSize: '35px', marginTop: '23px', fontWeight: 'bold'}}>
+          Welcome!
+        </p>
+        <div className="form-group">
+          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: '50px' }}>
+            <div className="form-group">
+              <label htmlFor="firstName" style={{ color: '#7B9B69' }}>
+                First name{requiredFields.includes('firstName') && isFieldEmpty(formData.firstName) ? (
+                  <span style={{ color: 'red' }}>*</span>
+                ) : null}
+              </label>
+              <input
                 type="text"
-                placeholder="Your First Name"
+                id="firstName"
+                name="firstName"
+                placeholder="John"
                 value={formData.firstName}
                 onChange={handleChange}
+                style={{
+                  borderBottom: '2px solid #7B9B69',
+                }}
               />
-              <Typography style={{ color: 'red' }} fontSize="sm">{errorMessages.firstName}</Typography>
-            </FormControl>
-            <FormControl>
-              <FormLabel>Last Name</FormLabel>
-              <Input
-                name="lastName"
+            </div>
+            <div className="form-group">
+              <label htmlFor="lastName" style={{ color: '#7B9B69' }}>
+                Last name{requiredFields.includes('lastName') && isFieldEmpty(formData.lastName) ? (
+                  <span style={{ color: 'red' }}>*</span>
+                ) : null}
+              </label>
+              <input
                 type="text"
-                placeholder="Your Last Name"
+                id="lastName"
+                name="lastName"
+                placeholder="Doe"
                 value={formData.lastName}
                 onChange={handleChange}
+                style={{
+                  borderBottom: '2px solid #7B9B69',
+                }}
               />
-              <Typography style={{ color: 'red' }} fontSize="sm">{errorMessages.lastName}</Typography>
-            </FormControl>
-            <FormControl>
-              <FormLabel>Date of Birth</FormLabel>
-              <Input
-                name="dob"
-                type="date"
-                value={formData.dob}
-                onChange={handleChange}
-              />
-              <Typography style={{ color: 'red' }} fontSize="sm">{errorMessages.dob}</Typography>
-            </FormControl>
-            <FormControl>
-              <FormLabel>Address</FormLabel>
-              <Input
-                name="address"
+            </div>
+            <div className="form-group">
+              <label htmlFor="gender" style={{ color: '#7B9B69' }}>
+                Gender{requiredFields.includes('gender') && isFieldEmpty(formData.gender) ? (
+                  <span style={{ color: 'red' }}>*</span>
+                ) : null}
+              </label>
+              <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: '13px' }}>
+                <button
+                  type="button"
+                  style={{
+                    border: '1px solid #7B9B69',
+                    color: formData.gender === 'Male' ? 'white' : '#7B9B69',
+                    backgroundColor: formData.gender === 'Male' ? '#7B9B69' : 'white',
+                    borderRadius: '15px',
+                    padding: '5px 20px',
+                    cursor: 'pointer',
+                    transition: 'background-color 0.2s',
+                  }}
+                  onClick={() => setFormData({ ...formData, gender: 'Male' })}
+                >
+                  Male
+                </button>
+                <button
+                  type="button"
+                  style={{
+                    border: '1px solid #7B9B69',
+                    color: formData.gender === 'Female' ? 'white' : '#7B9B69',
+                    backgroundColor: formData.gender === 'Female' ? '#7B9B69' : 'white',
+                    borderRadius: '15px',
+                    padding: '5px 20px',
+                    cursor: 'pointer',
+                    transition: 'background-color 0.2s',
+                  }}
+                  onClick={() => setFormData({ ...formData, gender: 'Female' })}
+                >
+                  Female
+                </button>
+              </div>
+            </div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: '50px' }}>
+            <div className="form-group">
+              <label htmlFor="homeAddress" style={{ color: '#7B9B69' }}>
+                Home Address{requiredFields.includes('homeAddress') && isFieldEmpty(formData.homeAddress) ? (
+                  <span style={{ color: 'red' }}>*</span>
+                ) : null}
+              </label>
+              <input
                 type="text"
-                placeholder="Your Address"
-                value={formData.address}
+                id="homeAddress"
+                name="homeAddress"
+                placeholder="1 Smith Road"
+                value={formData.homeAddress}
                 onChange={handleChange}
+                style={{
+                  borderBottom: '2px solid #7B9B69',
+                }}
               />
-              <Typography style={{ color: 'red' }} fontSize="sm">{errorMessages.address}</Typography>
-            </FormControl>
-            <FormControl>
-              <FormLabel>Postal Code</FormLabel>
-              <Input
-                name="postalCode"
+            </div>
+            <div className="form-group">
+              <label htmlFor="dateOfBirth" style={{ color: '#7B9B69' }}>
+                Date of Birth{requiredFields.includes('dateOfBirth') && isFieldEmpty(formData.dateOfBirth) ? (
+                  <span style={{ color: 'red' }}>*</span>
+                ) : null}
+              </label>
+              <input
                 type="text"
-                placeholder="Your Postal Code"
-                value={formData.postalCode}
+                id="dateOfBirth"
+                name="dateOfBirth"
+                placeholder="YYYY/MM/DD"
+                value={formData.dateOfBirth}
                 onChange={handleChange}
+                style={{
+                  borderBottom: '2px solid #7B9B69',
+                }}
               />
-              <Typography style={{ color: 'red' }} fontSize="sm">{errorMessages.postalCode}</Typography>
-            </FormControl>
-            <FormControl>
-              <FormLabel>City</FormLabel>
-              <Input
-                name="city"
+            </div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: '50px' }}>
+            <div className="form-group">
+              <label htmlFor="phone" style={{ color: '#7B9B69' }}>
+                Phone{requiredFields.includes('phone') && isFieldEmpty(formData.phone) ? (
+                  <span style={{ color: 'red' }}>*</span>
+                ) : null}
+              </label>
+              <input
                 type="text"
-                placeholder="Your City"
-                value={formData.city}
+                id="phone"
+                name="phone"
+                placeholder="123-456-7890"
+                value={formData.phone}
                 onChange={handleChange}
+                style={{
+                  borderBottom: '2px solid #7B9B69',
+                }}
               />
-              <Typography style={{ color: 'red' }} fontSize="sm">
-                {errorMessages.city}
-              </Typography>
-            </FormControl>
-            <FormControl>
-              <FormLabel>Country</FormLabel>
-              <Input
-                name="country"
+            </div>
+            <div className="form-group" style={{ marginRight: '80px' }}>
+              <label htmlFor="email" style={{ color: '#7B9B69' }}>
+                Email{requiredFields.includes('email') && isFieldEmpty(formData.email) ? (
+                  <span style={{ color: 'red' }}>*</span>
+                ) : null}
+              </label>
+              <input
                 type="text"
-                placeholder="Your Country"
-                value={formData.country}
-                onChange={handleChange}
-              />
-              <Typography style={{ color: 'red' }} fontSize="sm">{errorMessages.country}</Typography>
-            </FormControl>
-            <FormControl>
-              <FormLabel>State/Province</FormLabel>
-              <Input
-                name="stateProvince"
-                type="text"
-                placeholder="Your State/Province"
-                value={formData.stateProvince}
-                onChange={handleChange}
-              />
-              <Typography style={{ color: 'red' }} fontSize="sm">{errorMessages.stateProvince}</Typography>
-            </FormControl>
-            <FormControl>
-              <FormLabel>Phone Number</FormLabel>
-              <Input
-                name="phoneNumber"
-                type="text"
-                placeholder="Your Phone Number"
-                value={formData.phoneNumber}
-                onChange={handleChange}
-              />
-              <Typography style={{ color: 'red' }} fontSize="sm">{errorMessages.phoneNumber}</Typography>
-            </FormControl>
-            <FormControl>
-              <FormLabel>Email</FormLabel>
-              <Input
+                id="email"
                 name="email"
-                type="email"
                 placeholder="johndoe@email.com"
                 value={formData.email}
                 onChange={handleChange}
+                style={{
+                  borderBottom: '2px solid #7B9B69',
+                }}
               />
-              <Typography style={{ color: 'red' }} fontSize="sm">{errorMessages.email}</Typography>
-            </FormControl>
-            <FormControl>
-              <FormLabel>Password</FormLabel>
-              <Input
-                name="password"
+            </div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: '50px' }}>
+            <div className="form-group">
+              <label htmlFor="password" style={{ color: '#7B9B69' }}>
+                Password{requiredFields.includes('password') && isFieldEmpty(formData.password) ? (
+                  <span style={{ color: 'red' }}>*</span>
+                ) : null}
+              </label>
+              <input
                 type="password"
-                placeholder="Your Password"
+                id="password"
+                name="password"
+                placeholder="password"
                 value={formData.password}
                 onChange={handleChange}
+                style={{
+                  borderBottom: '2px solid #7B9B69',
+                }}
               />
-              <Typography style={{ color: 'red' }} fontSize="sm">{errorMessages.password}</Typography>
-            </FormControl>
-            <FormControl>
-              <FormLabel>Re-enter Password</FormLabel>
-              <Input
-                name="reenterPassword"
+            </div>
+            <div className="form-group" style={{ marginRight: '80px' }}>
+              <label htmlFor="confirmPassword" style={{ color: '#7B9B69' }}>
+                Confirmed Password{requiredFields.includes('confirmPassword') && isFieldEmpty(formData.confirmPassword) ? (
+                  <span style={{ color: 'red' }}>*</span>
+                ) : null}
+              </label>
+              <input
                 type="password"
-                placeholder="Re-enter Your Password"
-                value={formData.reenterPassword}
+                id="confirmPassword"
+                name="confirmPassword"
+                placeholder="confirm password"
+                value={formData.confirmPassword}
                 onChange={handleChange}
+                style={{
+                  borderBottom: '2px solid #7B9B69',
+                }}
               />
-              <Typography style={{ color: 'red' }} fontSize="sm">{errorMessages.reenterPassword}</Typography>
-            </FormControl>
-            <Button sx={{mt: 1, backgroundColor: 'rgb(77, 77, 180)', color: 'white'  }} onClick={handleSubmit}>
-              Sign Up
-            </Button>
-            <Typography
-              endDecorator={<Link href="/login">Already have an account?</Link>}
-              fontSize="sm"
-              sx={{ alignSelf: 'center' }}
-            ></Typography>
-          </Sheet>
+            </div>
+          </div>
         </div>
-      </main>
-    </CssVarsProvider>
+        <button
+          className="submit"
+          type="submit"
+          style={{
+            width: '40%',
+            color: 'white',
+            backgroundColor: '#7B9B69',
+            borderRadius: '15px',
+            padding: '8px 20px',
+            margin: 'auto',
+            display: 'block',
+            marginTop: '16px',
+          }}
+        >
+          Register
+        </button>
+        <p className="link" style={{ textAlign: 'center', marginTop: '20px' }}>
+          <Link to="/login" style={{ color: '#7B9B69', fontSize: '12px'  }}>
+            Got an account? Login here
+          </Link>
+        </p>
+      </form>
+    </div>
   );
 }
+
+export default SignUp;
