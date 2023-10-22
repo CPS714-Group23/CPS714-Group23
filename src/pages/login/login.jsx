@@ -24,7 +24,6 @@ function Login() {
   return (
     <div className="login-container">
       <div className="login-content">
-        <p className="login__title">Pharmaceutical Portal</p>
         <p className="login__subtitle">Good to see you again!</p>
 
         <form onSubmit={handleSubmit} className="login__form">
