@@ -1,65 +1,68 @@
-import React from 'react';
-import { CssVarsProvider } from '@mui/joy/styles';
-import Sheet from '@mui/joy/Sheet';
-import Typography from '@mui/joy/Typography';
-import FormControl from '@mui/joy/FormControl';
-import FormLabel from '@mui/joy/FormLabel';
-import Input from '@mui/joy/Input';
-import Button from '@mui/joy/Button';
-import Link from '@mui/joy/Link';
-import './login.css';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import "./login.css";
 
-export default function Login() {
+function Login() {
+  const [formData, setFormData] = useState({ email: "", password: "" });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevState) => ({ ...prevState, [name]: value }));
+  };
+
+  const isFormDataComplete = () => {
+    return Object.values(formData).every((value) => value.trim() !== "");
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (isFormDataComplete()) {
+      console.log("Form Data:", formData);
+    }
+  };
+
   return (
-    <CssVarsProvider>
-      <main>
-        <div className="login-container">
-          <Sheet
-            sx={{
-              width: 300,
-              mx: 'auto',
-              my: 7,
-              py: 3,
-              px: 2,
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 2,
-              borderRadius: 'md',
-              boxShadow: 'md',
-            }}
-            variant="outlined"
-          >
-            <div>
-              <Typography level="h4" component="h1">
-                <b>Welcome Back!</b>
-              </Typography>
-              <Typography level="body-sm">Please log in to your account.</Typography>
-            </div>
-            <FormControl>
-              <FormLabel>Email</FormLabel>
-              <Input
-                name="email"
-                type="email"
-                placeholder="johndoe@email.com"
-              />
-            </FormControl>
-            <FormControl>
-              <FormLabel>Password</FormLabel>
-              <Input
-                name="password"
-                type="password"
-                placeholder="Your Password"
-              />
-            </FormControl>
-            <Button sx={{mt: 1, backgroundColor: 'rgb(77, 77, 180)', color: 'white'  }}>Log In</Button>
-            <Typography
-              endDecorator={<Link href="/signup">Don't have an account? Sign up here</Link>}
-              fontSize="sm"
-              sx={{ alignSelf: 'center' }}
-            ></Typography>
-          </Sheet>
-        </div>
-      </main>
-    </CssVarsProvider>
+    <div className="login-container">
+      <div className="login-content">
+        <p className="login__title">Pharmaceutical Portal</p>
+        <p className="login__subtitle">Good to see you again!</p>
+
+        <form onSubmit={handleSubmit} className="login__form">
+          <div className="login__form-group">
+            <input
+              type="text"
+              id="email"
+              name="email"
+              placeholder=""
+              value={formData.email}
+              onChange={handleInputChange}
+              required
+              className="login__form-input"
+            />
+            <label htmlFor="email">Email</label>
+          </div>
+          <div className="login__form-group">
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder=""
+              value={formData.password}
+              onChange={handleInputChange}
+              required
+              className="login__form-input"
+            />
+            <label htmlFor="password">Password</label>
+          </div>
+          <button className="login__submit-btn">Login</button>
+        </form>
+        <p className="login__register-link">
+          <Link to="/signup">Don't have an account? Register here</Link>
+        </p>
+      </div>
+      <div className="login__image"></div>
+    </div>
   );
 }
+
+export default Login;
