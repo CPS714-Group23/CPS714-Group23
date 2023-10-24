@@ -18,7 +18,7 @@ const routesConfig = [
     element: <About />,
   },
   {
-    path: '/contact',
+    path: '/services',
     element: <Contact />,
   },
   {

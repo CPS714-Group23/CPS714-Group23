@@ -1,85 +1,117 @@
 import React from 'react';
-import { AppBar, Toolbar, Button } from '@mui/material';
+import { Button, Menu, MenuItem, Divider } from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
+import { ReactComponent as Logo } from './logo.svg';
+import { ReactComponent as MenuBtn } from './menu-button.svg';
+import { ReactComponent as CloseBtn } from './close-button.svg';
 import './Nav.css';
 
 function Navbar() {
-  const buttonStyle = {
-    fontSize: '20px',
-    fontFamily: 'Raleway, sans-serif',
-  };
-
   const location = useLocation();
+  const menu = [
+    { name: 'Services', path: '/services'},
+    { name: 'About', path: '/about'}
+  ];
+  const menuButtons = menu.map(item =>
+    <Button component={Link} to={item.path}
+      style={{
+        fontWeight: location.pathname === item.path ? '600' : '500'
+      }}>
+      {item.name}
+    </Button>
+  );
+  
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+    const menuButtonsSmall = menu.map(item =>
+    <MenuItem onClick={handleClose} component={Link} to={item.path}
+    style={{
+        fontWeight: location.pathname === item.path ? '600' : '500',
+        color: '#7B9B69'
+        }}>
+        {item.name}
+    </MenuItem>
+    );
+    const menuButton = open ? <CloseBtn /> : <MenuBtn />;
 
   return (
-    <AppBar position="sticky" className="navbar">
-      <Toolbar className="toolbar">
-        <div className="left-nav">
-          <Button
-            color="inherit"
-            component={Link}
-            to="/"
-            style={{
-              ...buttonStyle,
-              fontWeight: location.pathname === '/' ? 'bold' : 'normal',
-              opacity: location.pathname === '/' ? 1 : 0.7,
-            }}
-          >
-            Home
-          </Button>
-          <Button
-            color="inherit"
-            component={Link}
-            to="/contact"
-            style={{
-              ...buttonStyle,
-              fontWeight: location.pathname === '/contact' ? 'bold' : 'normal',
-              opacity: location.pathname === '/contact' ? 1 : 0.7,
-            }}
-          >
-            Contact
-          </Button>
-          <Button
-            color="inherit"
-            component={Link}
-            to="/about"
-            style={{
-              ...buttonStyle,
-              fontWeight: location.pathname === '/about' ? 'bold' : 'normal',
-              opacity: location.pathname === '/about' ? 1 : 0.7,
-            }}
-          >
-            About
-          </Button>
+    <div className="navbar">
+      <div className="left-nav">
+        <Logo id='logo'/>
+        <Button component={Link} to="/" id='logoButton'>
+          Pharmaceutical Portal
+        </Button>
+      </div>
+      <div className="right-nav" style={{ display: 'flex', alignItems: 'center' }}>
+        <div className='small-view-nav'>
+            <Button
+                id="basic-button"
+                aria-controls={open ? 'basic-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? 'true' : undefined}
+                onClick={handleClick}>
+                {menuButton}
+            </Button>
+            <Menu
+                id="basic-menu"
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                MenuListProps={{
+                'aria-labelledby': 'basic-button',
+                }}
+                style = {{
+                    textAlign: 'center'
+                }}>
+                {menuButtonsSmall}
+                <Divider />
+                <MenuItem onClick={handleClose} component={Link} to="/login" className='logInButton'
+                style={{
+                    color: '#7B9B69',
+                    display: 'block',
+                    outline: '1px solid #7B9B69',
+                    borderRadius: '20px',
+                    padding: '.15em 1.4em',
+                    margin: '1em'
+                }}>
+                Log in
+                </MenuItem>
+                <MenuItem onClick={handleClose} component={Link} to="/signup" className='registerButton'
+                style={{
+                    color: '#FFF',
+                    display: 'block',
+                    backgroundColor: '#7B9B69',
+                    borderRadius: '20px',
+                    padding: '.15em 1.4em',
+                    margin: '1em'
+                }}>
+                Register
+                </MenuItem>
+            </Menu>
         </div>
-        <div className="right-nav" style={{ display: 'flex', alignItems: 'center' }}>
-          <Button
-            color="inherit"
-            component={Link}
-            to="/signup"
+        <div className='large-view-nav'>
+            {menuButtons}
+            <Button component={Link} to="/login" className='logInButton'
             style={{
-              ...buttonStyle,
-              fontWeight: location.pathname === '/signup' ? 'bold' : 'normal',
-              opacity: location.pathname === '/signup' ? 1 : 0.7,
-            }}
-          >
-            SignUp
-          </Button>
-          <Button
-            color="inherit"
-            component={Link}
-            to="/login"
+                fontWeight: location.pathname === '/login' ? '600' : '500'
+            }}>
+            Log In
+            </Button>
+            <Button component={Link} to="/signup" className='registerButton'
             style={{
-              ...buttonStyle,
-              fontWeight: location.pathname === '/login' ? 'bold' : 'normal',
-              opacity: location.pathname === '/login' ? 1 : 0.7,
-            }}
-          >
-            Login
-          </Button>
+                fontWeight: location.pathname === '/signup' ? '600' : '500'
+            }}>
+            Register
+            </Button>
         </div>
-      </Toolbar>
-    </AppBar>
+      </div>
+    </div>
   );
 }
 
