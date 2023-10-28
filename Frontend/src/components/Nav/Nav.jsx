@@ -1,9 +1,9 @@
 import React from 'react';
 import { Button, Menu, MenuItem, Divider } from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
-import { ReactComponent as Logo } from './logo.svg';
-import { ReactComponent as MenuBtn } from './menu-button.svg';
-import { ReactComponent as CloseBtn } from './close-button.svg';
+import { ReactComponent as Logo } from '../logo.svg';
+import { ReactComponent as MenuBtn } from '../menu-button.svg';
+import { ReactComponent as CloseBtn } from '../close-button.svg';
 import './Nav.css';
 
 function Navbar() {
