@@ -1,0 +1,21 @@
+button {
+  margin-right: 10px;
+  margin-bottom: -10px;
+}
+
+.green-square {
+  width: 200%; 
+  max-width: 2000px; 
+  height: 760px;
+  background-image: url('flower.png');
+  background-size: cover;
+  margin-left: 300px;
+  margin-top: -750px;
+  border-top-left-radius: 40px;
+  border-bottom-left-radius: 40px;
+}
+  
+.green-square.editing {
+  height: 1050px;
+  margin-top: -970px;
+}

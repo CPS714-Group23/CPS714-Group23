@@ -7,6 +7,7 @@ import About from './pages/about/about';
 import Contact from './pages/contact/contact';
 import SignUp from './pages/signUp/signUp';
 import Login from './pages/login/login';
+import Profile from './pages/profile/profile';
 import PharmaceuticalPortal from './pages/home/PharmaceuticalPortal';
 import './App.css';
 
@@ -30,7 +31,12 @@ const routesConfig = [
   {
     path: '/login',
     element: <Login />,
-  }
+  },
+  {
+    path: '/profile',
+    element: <Profile />,
+  },
+
 ];
 
 function App() {
