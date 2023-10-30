@@ -59,7 +59,7 @@ const Profile = () => {
   };
 
   const handleCancel = () => {
-    // Revert changes to the previously saved data and exit edit mode
+    // Revert changes to the previously saved data and exit editing 
     if (isEditing) {
       setFormData(savedData);
     }
