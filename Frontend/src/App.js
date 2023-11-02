@@ -10,6 +10,7 @@ import Login from './pages/login/login';
 import Profile from './pages/profile/profile';
 import PharmaceuticalPortal from './pages/home/PharmaceuticalPortal';
 import './App.css';
+import Scheduler from './pages/scheduler/scheduler';
 
 const routesConfig = [
   {
@@ -36,7 +37,10 @@ const routesConfig = [
     path: '/profile',
     element: <Profile />,
   },
-
+  {
+    path: '/scheduler',
+    element: <Scheduler />, 
+  },
 ];
 
 function App() {

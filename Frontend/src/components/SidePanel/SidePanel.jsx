@@ -27,7 +27,7 @@ const menuItemsTop = [
 ];
 
 const menuItemsMiddle = [
-  {name: 'Scheduler', icon: <Calendar />, path: '/2'},
+  {name: 'Scheduler', icon: <Calendar />, path: '/scheduler'},
   {name: 'Drug supply tracker', icon: <PrescriptionBottle />, path: '/3'},
   {name: 'Prescription', icon: <RxFile />, path: '/4'},
   {name: 'Drug interaction checker', icon: <Analytics />, path: '/5'},
