@@ -31,12 +31,31 @@ function SignUp() {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault(); 
+  
     const areRequiredFieldsFilled = requiredFields.every(field => !isFieldEmpty(formData[field]));
-
+  
     if (areRequiredFieldsFilled) {
-      console.log(formData); // Log the form data to the console for testing 
+      try {
+        const response = await fetch('/signup', {
+          method: 'POST', 
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData), 
+        });
+  
+        if (response.ok) {
+         
+          
+        } else {
+          console.error('Request failed with status:', response.status);
+        }
+      } catch (error) {
+        console.error('Request error:', error);
+      }
+  
       setFormData({
         firstName: '',
         lastName: '',
@@ -50,6 +69,7 @@ function SignUp() {
       });
     }
   };
+  
 
   return (
     <div className="grid-container">
