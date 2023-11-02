@@ -35,7 +35,7 @@ const menuItemsMiddle = [
 ];
 
 const menuItemsBottom = [
-  {name: 'Profile', icon: <Person />, path: '/7'},
+  {name: 'Profile', icon: <Person />, path: '/profile'},
   {name: 'Sign out', icon: <SignoutBtn />, path: '/8'}
 ]
 
