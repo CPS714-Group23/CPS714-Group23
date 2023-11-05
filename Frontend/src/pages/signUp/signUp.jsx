@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Alert } from '@mui/material';
 import { Link } from 'react-router-dom';
 import './signUp.css';
 
@@ -16,6 +17,7 @@ function SignUp() {
   });
 
   const [validationErrors, setValidationErrors] = useState({});
+  const [successMessage, setSuccessMessage] = useState(null); 
 
   const isFieldEmpty = (field) => {
     return field === '';
@@ -32,8 +34,6 @@ function SignUp() {
   };
 
   const isDateOfBirthValid = (dateOfBirth) => {
-    // You can add more comprehensive date validation logic here.
-    // For simplicity, let's assume a basic pattern YYYY/MM/DD.
     const datePattern = /^\d{4}\/\d{2}\/\d{2}$/;
     return datePattern.test(dateOfBirth);
   };
@@ -47,22 +47,22 @@ function SignUp() {
 
     // Validate phone number
     if (!isPhoneNumberValid(formData.phone)) {
-      errors.phone = 'Please enter a valid phone number (e.g., 123-456-7890)';
+      errors.phone = 'Invalid phone number';
     }
 
     // Validate email
     if (!isEmailValid(formData.email)) {
-      errors.email = 'Please enter a valid email address';
+      errors.email = 'Invalid email address';
     }
 
     // Validate date of birth
     if (!isDateOfBirthValid(formData.dateOfBirth)) {
-      errors.dateOfBirth = 'Please enter a valid date of birth (e.g., YYYY/MM/DD)';
+      errors.dateOfBirth = 'Invalid date of birth';
     }
 
     // Validate password
     if (!isPasswordValid(formData.password)) {
-      errors.password = 'Password must be at least 8 characters long';
+      errors.password = 'Password must be 8 characters minimum';
     }
 
     // Check if password matches with confirmed password
@@ -79,12 +79,10 @@ function SignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check if all required fields are filled
     const requiredFields = ['firstName', 'lastName', 'gender', 'homeAddress', 'dateOfBirth', 'phone', 'email', 'password', 'confirmPassword'];
     const areRequiredFieldsFilled = requiredFields.every((field) => !isFieldEmpty(formData[field]));
 
     if (areRequiredFieldsFilled) {
-      // Validate the form here
       if (validateForm()) {
         try {
           const response = await fetch('/signup', {
@@ -96,10 +94,6 @@ function SignUp() {
           });
 
           if (response.ok) {
-            // Form submission successful, you can handle success as needed
-            console.log('Form submitted successfully');
-
-            // Clear the form and validation errors
             setFormData({
               firstName: '',
               lastName: '',
@@ -112,25 +106,23 @@ function SignUp() {
               confirmPassword: '',
             });
             setValidationErrors({});
+            setSuccessMessage('Registration successful!');
           } else {
             console.error('Request failed with status:', response.status);
-            // You can handle errors or display an error message to the user here
+        
           }
         } catch (error) {
           console.error('Request error:', error);
-          // Handle network or request errors here
         }
       }
     } else {
-      // Handle required field validation errors
       const requiredFieldErrors = {};
-      requiredFields.forEach((field) => {
-        if (isFieldEmpty(formData[field])) {
-          requiredFieldErrors[field] = 'This field is required';
-        }
-      });
       setValidationErrors(requiredFieldErrors);
     }
+  };
+
+  const handleSuccessAlertClose = () => {
+    setSuccessMessage('');
   };
 
   const handleChange = (e) => {
@@ -145,6 +137,11 @@ function SignUp() {
     <div className="grid-container">
       <div className="square"></div>
       <form onSubmit={handleSubmit}>
+      {successMessage && (
+          <Alert severity="success" onClose={handleSuccessAlertClose}>
+            {successMessage}
+          </Alert>
+        )}
         <p style={{ textAlign: 'center', color: '#7B9B69', fontSize: '35px', marginTop: '23px', fontWeight: 'bold' }}>
           Welcome!
         </p>
@@ -165,7 +162,6 @@ function SignUp() {
                   borderBottom: '2px solid #7B9B69',
                 }}
               />
-              {validationErrors.firstName && <p style={{ color: 'red' }}>{validationErrors.firstName}</p>}
             </div>
             <div className="form-group">
               <label htmlFor="lastName" style={{ color: '#7B9B69' }}>
@@ -182,7 +178,6 @@ function SignUp() {
                   borderBottom: '2px solid #7B9B69',
                 }}
               />
-              {validationErrors.lastName && <p style={{ color: 'red' }}>{validationErrors.lastName}</p>}
             </div>
             <div className="form-group">
               <label htmlFor="gender" style={{ color: '#7B9B69' }}>
@@ -220,7 +215,6 @@ function SignUp() {
                   Female
                 </button>
               </div>
-              {validationErrors.gender && <p style={{ color: 'red' }}>{validationErrors.gender}</p>}
             </div>
           </div>
           <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: '50px' }}>
@@ -239,7 +233,6 @@ function SignUp() {
                   borderBottom: '2px solid #7B9B69',
                 }}
               />
-              {validationErrors.homeAddress && <p style={{ color: 'red' }}>{validationErrors.homeAddress}</p>}
             </div>
             <div className="form-group">
               <label htmlFor="dateOfBirth" style={{ color: '#7B9B69' }}>
@@ -256,7 +249,7 @@ function SignUp() {
                   borderBottom: '2px solid #7B9B69',
                 }}
               />
-              {validationErrors.dateOfBirth && <p style={{ color: 'red' }}>{validationErrors.dateOfBirth}</p>}
+              {validationErrors.dateOfBirth && <p style={{ color: 'red', fontSize:'11px', marginTop: '-5px'}}>{validationErrors.dateOfBirth}</p>}
             </div>
           </div>
           <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: '50px' }}>
@@ -275,7 +268,7 @@ function SignUp() {
                   borderBottom: '2px solid #7B9B69',
                 }}
               />
-              {validationErrors.phone && <p style={{ color: 'red' }}>{validationErrors.phone}</p>}
+              {validationErrors.phone && <p style={{ color: 'red', fontSize:'11px', marginTop: '-5px' }}>{validationErrors.phone}</p>}
             </div>
             <div className="form-group" style={{ marginRight: '80px' }}>
               <label htmlFor="email" style={{ color: '#7B9B69' }}>
@@ -292,7 +285,7 @@ function SignUp() {
                   borderBottom: '2px solid #7B9B69',
                 }}
               />
-              {validationErrors.email && <p style={{ color: 'red' }}>{validationErrors.email}</p>}
+              {validationErrors.email && <p style={{ color: 'red', fontSize:'11px', marginTop: '-5px' }}>{validationErrors.email}</p>}
             </div>
           </div>
           <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: '50px' }}>
@@ -311,7 +304,7 @@ function SignUp() {
                   borderBottom: '2px solid #7B9B69',
                 }}
               />
-              {validationErrors.password && <p style={{ color: 'red' }}>{validationErrors.password}</p>}
+              {validationErrors.password && <p style={{ color: 'red', fontSize:'11px', marginTop: '-5px' }}>{validationErrors.password}</p>}
             </div>
             <div className="form-group" style={{ marginRight: '80px' }}>
               <label htmlFor="confirmPassword" style={{ color: '#7B9B69' }}>
@@ -328,7 +321,7 @@ function SignUp() {
                   borderBottom: '2px solid #7B9B69',
                 }}
               />
-              {validationErrors.confirmPassword && <p style={{ color: 'red' }}>{validationErrors.confirmPassword}</p>}
+              {validationErrors.confirmPassword && <p style={{ color: 'red', fontSize:'11px', marginTop: '-5px' }}>{validationErrors.confirmPassword}</p>}
             </div>
           </div>
         </div>
