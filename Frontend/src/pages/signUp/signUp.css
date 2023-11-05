@@ -1,10 +1,11 @@
 .square {
   background-color: #7B9B69;
   width: 489%;
-  height: 80vh;
+  height: 84vh;
   border-top-right-radius: 20px;
   border-bottom-right-radius: 20px;
   position: absolute;
+  transform: translateY(-5%); 
   left: -500%;
 }
 
@@ -57,7 +58,7 @@ input:focus:not([read-only]) {
     align-items: center;
     max-width: 700px;
     margin: auto;
-    transform: translateX(20%);
+    transform: translateX(15%);
     margin-bottom: 20px;
     margin-top: 40px; 
   }
@@ -82,7 +83,7 @@ input:focus:not([read-only]) {
     align-items: center;
     max-width: 700px;
     margin: auto;
-    transform: translateX(20%);
+    transform: translateX(16%);
     margin-bottom: 20px;
     margin-top: 40px; 
   }

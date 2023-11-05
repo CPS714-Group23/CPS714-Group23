@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Alert } from '@mui/material';
 import { Link } from 'react-router-dom';
 import './signUp.css';
 
@@ -15,12 +16,113 @@ function SignUp() {
     confirmPassword: '',
   });
 
-  const [requiredFields] = useState([
-    'firstName', 'lastName', 'gender', 'homeAddress', 'dateOfBirth', 'phone', 'email', 'password', 'confirmPassword'
-  ]);
+  const [validationErrors, setValidationErrors] = useState({});
+  const [successMessage, setSuccessMessage] = useState(null); 
 
   const isFieldEmpty = (field) => {
     return field === '';
+  };
+
+  const isEmailValid = (email) => {
+    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    return emailPattern.test(email);
+  };
+
+  const isPhoneNumberValid = (phone) => {
+    const phonePattern = /^\d{3}-\d{3}-\d{4}$/;
+    return phonePattern.test(phone);
+  };
+
+  const isDateOfBirthValid = (dateOfBirth) => {
+    const datePattern = /^\d{4}\/\d{2}\/\d{2}$/;
+    return datePattern.test(dateOfBirth);
+  };
+
+  const isPasswordValid = (password) => {
+    return password.length >= 8;
+  };
+
+  const validateForm = () => {
+    const errors = {};
+
+    // Validate phone number
+    if (!isPhoneNumberValid(formData.phone)) {
+      errors.phone = 'Invalid phone number';
+    }
+
+    // Validate email
+    if (!isEmailValid(formData.email)) {
+      errors.email = 'Invalid email address';
+    }
+
+    // Validate date of birth
+    if (!isDateOfBirthValid(formData.dateOfBirth)) {
+      errors.dateOfBirth = 'Invalid date of birth';
+    }
+
+    // Validate password
+    if (!isPasswordValid(formData.password)) {
+      errors.password = 'Password must be 8 characters minimum';
+    }
+
+    // Check if password matches with confirmed password
+    if (formData.password !== formData.confirmPassword) {
+      errors.confirmPassword = 'Passwords do not match';
+    }
+
+    setValidationErrors(errors);
+
+    // Return true if there are no validation errors
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const requiredFields = ['firstName', 'lastName', 'gender', 'homeAddress', 'dateOfBirth', 'phone', 'email', 'password', 'confirmPassword'];
+    const areRequiredFieldsFilled = requiredFields.every((field) => !isFieldEmpty(formData[field]));
+
+    if (areRequiredFieldsFilled) {
+      if (validateForm()) {
+        try {
+          const response = await fetch('/signup', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+          });
+
+          if (response.ok) {
+            setFormData({
+              firstName: '',
+              lastName: '',
+              gender: '',
+              homeAddress: '',
+              dateOfBirth: '',
+              phone: '',
+              email: '',
+              password: '',
+              confirmPassword: '',
+            });
+            setValidationErrors({});
+            setSuccessMessage('Registration successful!');
+          } else {
+            console.error('Request failed with status:', response.status);
+        
+          }
+        } catch (error) {
+          console.error('Request error:', error);
+        }
+      }
+    } else {
+      const requiredFieldErrors = {};
+      setValidationErrors(requiredFieldErrors);
+    }
+  };
+
+  const handleSuccessAlertClose = () => {
+    setSuccessMessage('');
   };
 
   const handleChange = (e) => {
@@ -31,40 +133,23 @@ function SignUp() {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const areRequiredFieldsFilled = requiredFields.every(field => !isFieldEmpty(formData[field]));
-
-    if (areRequiredFieldsFilled) {
-      console.log(formData); // Log the form data to the console for testing 
-      setFormData({
-        firstName: '',
-        lastName: '',
-        gender: '',
-        homeAddress: '',
-        dateOfBirth: '',
-        phone: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-      });
-    }
-  };
-
   return (
     <div className="grid-container">
       <div className="square"></div>
       <form onSubmit={handleSubmit}>
-        <p style={{ textAlign: 'center', color: '#7B9B69', fontSize: '35px', marginTop: '23px', fontWeight: 'bold'}}>
+      {successMessage && (
+          <Alert severity="success" onClose={handleSuccessAlertClose}>
+            {successMessage}
+          </Alert>
+        )}
+        <p style={{ textAlign: 'center', color: '#7B9B69', fontSize: '35px', marginTop: '23px', fontWeight: 'bold' }}>
           Welcome!
         </p>
         <div className="form-group">
           <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: '50px' }}>
             <div className="form-group">
               <label htmlFor="firstName" style={{ color: '#7B9B69' }}>
-                First name{requiredFields.includes('firstName') && isFieldEmpty(formData.firstName) ? (
-                  <span style={{ color: 'red' }}>*</span>
-                ) : null}
+                First name{isFieldEmpty(formData.firstName) ? <span style={{ color: 'red' }}>*</span> : null}
               </label>
               <input
                 type="text"
@@ -80,9 +165,7 @@ function SignUp() {
             </div>
             <div className="form-group">
               <label htmlFor="lastName" style={{ color: '#7B9B69' }}>
-                Last name{requiredFields.includes('lastName') && isFieldEmpty(formData.lastName) ? (
-                  <span style={{ color: 'red' }}>*</span>
-                ) : null}
+                Last name{isFieldEmpty(formData.lastName) ? <span style={{ color: 'red' }}>*</span> : null}
               </label>
               <input
                 type="text"
@@ -98,9 +181,7 @@ function SignUp() {
             </div>
             <div className="form-group">
               <label htmlFor="gender" style={{ color: '#7B9B69' }}>
-                Gender{requiredFields.includes('gender') && isFieldEmpty(formData.gender) ? (
-                  <span style={{ color: 'red' }}>*</span>
-                ) : null}
+                Gender{isFieldEmpty(formData.gender) ? <span style={{ color: 'red' }}>*</span> : null}
               </label>
               <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: '13px' }}>
                 <button
@@ -139,9 +220,7 @@ function SignUp() {
           <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: '50px' }}>
             <div className="form-group">
               <label htmlFor="homeAddress" style={{ color: '#7B9B69' }}>
-                Home Address{requiredFields.includes('homeAddress') && isFieldEmpty(formData.homeAddress) ? (
-                  <span style={{ color: 'red' }}>*</span>
-                ) : null}
+                Home Address{isFieldEmpty(formData.homeAddress) ? <span style={{ color: 'red' }}>*</span> : null}
               </label>
               <input
                 type="text"
@@ -157,9 +236,7 @@ function SignUp() {
             </div>
             <div className="form-group">
               <label htmlFor="dateOfBirth" style={{ color: '#7B9B69' }}>
-                Date of Birth{requiredFields.includes('dateOfBirth') && isFieldEmpty(formData.dateOfBirth) ? (
-                  <span style={{ color: 'red' }}>*</span>
-                ) : null}
+                Date of Birth{isFieldEmpty(formData.dateOfBirth) ? <span style={{ color: 'red' }}>*</span> : null}
               </label>
               <input
                 type="text"
@@ -172,14 +249,13 @@ function SignUp() {
                   borderBottom: '2px solid #7B9B69',
                 }}
               />
+              {validationErrors.dateOfBirth && <p style={{ color: 'red', fontSize:'11px', marginTop: '-5px'}}>{validationErrors.dateOfBirth}</p>}
             </div>
           </div>
           <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: '50px' }}>
             <div className="form-group">
               <label htmlFor="phone" style={{ color: '#7B9B69' }}>
-                Phone{requiredFields.includes('phone') && isFieldEmpty(formData.phone) ? (
-                  <span style={{ color: 'red' }}>*</span>
-                ) : null}
+                Phone{isFieldEmpty(formData.phone) ? <span style={{ color: 'red' }}>*</span> : null}
               </label>
               <input
                 type="text"
@@ -192,12 +268,11 @@ function SignUp() {
                   borderBottom: '2px solid #7B9B69',
                 }}
               />
+              {validationErrors.phone && <p style={{ color: 'red', fontSize:'11px', marginTop: '-5px' }}>{validationErrors.phone}</p>}
             </div>
             <div className="form-group" style={{ marginRight: '80px' }}>
               <label htmlFor="email" style={{ color: '#7B9B69' }}>
-                Email{requiredFields.includes('email') && isFieldEmpty(formData.email) ? (
-                  <span style={{ color: 'red' }}>*</span>
-                ) : null}
+                Email{isFieldEmpty(formData.email) ? <span style={{ color: 'red' }}>*</span> : null}
               </label>
               <input
                 type="text"
@@ -210,14 +285,13 @@ function SignUp() {
                   borderBottom: '2px solid #7B9B69',
                 }}
               />
+              {validationErrors.email && <p style={{ color: 'red', fontSize:'11px', marginTop: '-5px' }}>{validationErrors.email}</p>}
             </div>
           </div>
           <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: '50px' }}>
             <div className="form-group">
               <label htmlFor="password" style={{ color: '#7B9B69' }}>
-                Password{requiredFields.includes('password') && isFieldEmpty(formData.password) ? (
-                  <span style={{ color: 'red' }}>*</span>
-                ) : null}
+                Password{isFieldEmpty(formData.password) ? <span style={{ color: 'red' }}>*</span> : null}
               </label>
               <input
                 type="password"
@@ -230,12 +304,11 @@ function SignUp() {
                   borderBottom: '2px solid #7B9B69',
                 }}
               />
+              {validationErrors.password && <p style={{ color: 'red', fontSize:'11px', marginTop: '-5px' }}>{validationErrors.password}</p>}
             </div>
             <div className="form-group" style={{ marginRight: '80px' }}>
               <label htmlFor="confirmPassword" style={{ color: '#7B9B69' }}>
-                Confirmed Password{requiredFields.includes('confirmPassword') && isFieldEmpty(formData.confirmPassword) ? (
-                  <span style={{ color: 'red' }}>*</span>
-                ) : null}
+                Confirmed Password{isFieldEmpty(formData.confirmPassword) ? <span style={{ color: 'red' }}>*</span> : null}
               </label>
               <input
                 type="password"
@@ -248,6 +321,7 @@ function SignUp() {
                   borderBottom: '2px solid #7B9B69',
                 }}
               />
+              {validationErrors.confirmPassword && <p style={{ color: 'red', fontSize:'11px', marginTop: '-5px' }}>{validationErrors.confirmPassword}</p>}
             </div>
           </div>
         </div>
@@ -268,7 +342,7 @@ function SignUp() {
           Register
         </button>
         <p className="link" style={{ textAlign: 'center', marginTop: '20px' }}>
-          <Link to="/login" style={{ color: '#7B9B69', fontSize: '12px'  }}>
+          <Link to="/login" style={{ color: '#7B9B69', fontSize: '12px' }}>
             Got an account? Login here
           </Link>
         </p>
