@@ -19,7 +19,7 @@
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   width: 90%
 }
 
@@ -47,7 +47,7 @@ input:focus:not([read-only]) {
   .square {
     background-color: #7B9B69;
     width: 800%;
-    height: 80vh;
+    height: 85vh;
     border-top-right-radius: 20px;
     border-bottom-right-radius: 20px;
     position: fixed;
@@ -72,7 +72,7 @@ input:focus:not([read-only]) {
   .square {
     background-color: #7B9B69;
     width: 490%;
-    height: 80vh;
+    height: 83vh;
     border-top-right-radius: 20px;
     border-bottom-right-radius: 20px;
     position: fixed;

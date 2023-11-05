@@ -109,7 +109,6 @@ function SignUp() {
             setSuccessMessage('Registration successful!');
           } else {
             console.error('Request failed with status:', response.status);
-        
           }
         } catch (error) {
           console.error('Request error:', error);
