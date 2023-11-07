@@ -14,12 +14,8 @@ const app = express();
 const connectDb = async () => {
   try {
       const client = new Client({
-          user: process.env.PGUSER,
-          host: process.env.PGHOST,
-          database: process.env.PGDATABASE,
-          password: process.env.PGPASSWORD,
-          port: process.env.PGPORT,
-          ssl: true
+          connectionString: process.env.CONNECTIONSTRING,
+          ssl: { rejectUnauthorized: false }
       })
 
       await client.connect()
