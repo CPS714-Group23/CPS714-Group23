@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 // import interactionPlugin from "@fullcalendar/interaction";
@@ -6,7 +6,7 @@ import "./scheduler.css";
 
 function Scheduler() {
   // Sample events data
-  const events = [
+  const [events, setEvents] = useState([
     {
       title: "Dr. A",
       start: new Date("2023-11-15T15:00:00"),
@@ -37,7 +37,29 @@ function Scheduler() {
         type: "Medications",
       },
     },
-  ];
+  ]);
+
+  const addEvent = async (newEvent) => {
+    try {
+      const response = await fetch('/api/scheduler/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newEvent),
+      });
+      
+      if (response.ok) {
+        const addedEvent = await response.json();
+        // Add the new event to the current state
+        setEvents(currentEvents => [...currentEvents, addedEvent.event]);
+      } else {
+        throw new Error('Network response was not ok.');
+      }
+    } catch (error) {
+      console.error('There has been a problem with your fetch operation:', error);
+    }
+  };
 
   function renderEventContent(eventInfo) {
     // Check if the event is of type "Appointments"
@@ -84,6 +106,23 @@ function Scheduler() {
   //   console.log("Date selected:", info.dateStr);
   // }
 
+  function handleFormSubmit(event) {
+    event.preventDefault();
+    // Get form data and create an event object
+    const newEvent = {
+      title: event.target.title.value,
+      start: new Date(event.target.start.value),
+      end: new Date(event.target.end.value),
+      extendedProps: {
+        type: event.target.type.value,
+        location: event.target.location.value,
+      },
+    };
+    // Call the addEvent function with the new event object
+    addEvent(newEvent);
+  }
+  
+
   return (
     <div>
       <h1><b>Scheduler</b></h1>
@@ -96,6 +135,17 @@ function Scheduler() {
         events={events}
         eventContent={renderEventContent} // Render custom event content
       />
+
+      {/* Test event function */}
+      <form onSubmit={handleFormSubmit}>
+      <input type="text" name="title" placeholder="Event Title" required />
+      <input type="datetime-local" name="start" placeholder="Start Time" required />
+      <input type="datetime-local" name="end" placeholder="End Time" required />
+      <input type="text" name="type" placeholder="Event Type" required />
+      <input type="text" name="location" placeholder="Location" required />
+      <button type="submit">Add Event</button>
+    </form>
+
     </div>
   );
 }
