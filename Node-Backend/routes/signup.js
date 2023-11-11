@@ -22,7 +22,7 @@ router.post('/', async (req, res) => {
 
     // Insert the new patient into the database
     const insertUserQuery =
-      'INSERT INTO patient (first_name, last_name, gender, home_address, date_of_birth, phone, email, password) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *';
+      'INSERT INTO patient (first_name, last_name, gender, home_address, date_of_birth, phone_number, email, password) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *';
     const values = [firstName, lastName, gender, homeAddress, dateOfBirth, phone, email, hashedPassword];
 
     const newUser = await db.query(insertUserQuery, values);
