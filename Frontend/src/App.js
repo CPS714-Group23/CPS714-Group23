@@ -46,9 +46,9 @@ const routesConfig = [
 function App() {
   return (
     <>
-      {/* <Navbar /> */}
-      <PortalNav />
-      <SidePanel />
+      <Navbar /> 
+      {/* <PortalNav /> */}
+      {/* <SidePanel /> */} 
       <Routes>
         {routesConfig.map((route, index) => (
           <Route key={index} path={route.path} element={route.element} />
