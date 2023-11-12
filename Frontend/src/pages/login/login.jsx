@@ -5,6 +5,18 @@ import "./login.css";
 function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
 
+  const [validationErrors, setValidationErrors] = useState({});
+  const [errorMessage, setErrorMessage] = useState(null); 
+
+  const isEmailValid = (email) => {
+    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    return emailPattern.test(email);
+  };
+
+  const isPasswordValid = (password) => {
+    return password.length >= 8;
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({ ...prevState, [name]: value }));
@@ -14,10 +26,61 @@ function Login() {
     return Object.values(formData).every((value) => value.trim() !== "");
   };
 
-  const handleSubmit = (e) => {
+  const validateForm = () => {
+    const errors = {};
+
+    // Validate email
+    if (!isEmailValid(formData.email)) {
+      errors.email = 'Invalid email address';
+    }
+
+    // Validate password
+    if (!isPasswordValid(formData.password)) {
+      errors.password = 'Password must be 8 characters minimum';
+    }
+
+    setValidationErrors(errors);
+
+    // Return true if there are no validation errors
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (isFormDataComplete()) {
-      console.log("Form Data:", formData);
+      if (validateForm()) {
+        try {
+          const response = await fetch('/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+          });
+
+          if (response.ok) {
+            setFormData({
+              email: '',
+              password: '',
+            });
+            setValidationErrors({});
+            setErrorMessage(null); 
+          
+          } else {
+            const data = await response.json();
+            if (data.error) {
+              setErrorMessage(data.error);
+            } else {
+              console.error('Request failed with status:', response.status);
+            }
+          }
+        } catch (error) {
+          console.error('Request error:', error);
+        }
+      }
+    } else {
+      const requiredFieldErrors = {};
+      setValidationErrors(requiredFieldErrors);
     }
   };
 
