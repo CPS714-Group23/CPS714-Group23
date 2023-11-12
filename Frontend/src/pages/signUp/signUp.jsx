@@ -35,10 +35,10 @@ function SignUp() {
   };
 
   const isDateOfBirthValid = (dateOfBirth) => {
-    const datePattern = /^\d{4}\/\d{2}\/\d{2}$/;
+    const datePattern = /^(?:19|20)\d\d\/(0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])$/;
     return datePattern.test(dateOfBirth);
   };
-
+  
   const isPasswordValid = (password) => {
     return password.length >= 8;
   };
@@ -200,7 +200,7 @@ function SignUp() {
               <label htmlFor="gender" style={{ color: '#7B9B69' }}>
                 Gender{isFieldEmpty(formData.gender) ? <span style={{ color: 'red' }}>*</span> : null}
               </label>
-              <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: '13px' }}>
+              <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: '5px' }}>
                 <button
                   type="button"
                   style={{
