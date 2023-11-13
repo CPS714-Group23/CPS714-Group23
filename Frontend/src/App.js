@@ -9,6 +9,7 @@ import SignUp from './pages/signUp/signUp';
 import Login from './pages/login/login';
 import Profile from './pages/profile/profile';
 import PharmaceuticalPortal from './pages/home/PharmaceuticalPortal';
+import PharmaceuticalPortalLog from './pages/home-loggedin/PharmaceuticalPortalLog';
 import './App.css';
 import Scheduler from './pages/scheduler/scheduler';
 
@@ -16,6 +17,10 @@ const routesConfig = [
   {
     path: '/',
     element: <PharmaceuticalPortal />, 
+  },
+  {
+    path: '/home',
+    element: <PharmaceuticalPortalLog />, 
   },
   {
     path: '/about',
