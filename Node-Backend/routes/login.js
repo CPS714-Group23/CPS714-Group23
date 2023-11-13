@@ -8,18 +8,18 @@ router.post('/', async (req, res) => {
     const { email, password } = req.body;
 
     // Check if a patient with the same email and password exists
-    const checkEmailQuery = 'SELECT * FROM patient WHERE email = $1 AND password = $2';
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-    const existingUser = await db.query(checkEmailQuery, [email, hashedPassword]);
+    const checkEmailQuery = 'SELECT password FROM patient WHERE email = $1';
+    const queryresult = await db.query(checkEmailQuery, [email]);
 
-    if (existingUser.rows.length == 0) {
-        const errorMessage = 'Email or password is incorrect';
-        return res.json({ error: errorMessage });
+    if (queryresult.rows.length == 0) {
+        const errorMessage = 'Incorrect Email or password';
+        return res.status(401).res.json({ error: errorMessage });
     }
     else{
-        console.log("correct pass");
-        //redirect and keep token
+        if(bcrypt.compare(password, queryresult.rows[0].password)){
+          console.log("correct pass");
+          //redirect and keep token
+        }
     }
     
   } catch (err) {

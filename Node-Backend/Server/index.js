@@ -4,9 +4,10 @@ const signupRoute = require("../routes/signup");
 const loginRoute = require("../routes/login"); 
 const schedulerRoute = require("../routes/scheduler");
 const app = express();
-const client = require('twilio')('AC28416c6be03f3b835b1f7eb6d6088865', '56cc34c4c88edf11b9c12f2f350c1b51'); //need account SID and token
 
 require('dotenv').config();
+
+const client = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_TOKEN);
 
 const PORT = process.env.PORT || 3001;
 
