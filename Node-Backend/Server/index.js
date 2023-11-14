@@ -52,4 +52,4 @@ async function sendEmail(to, subject, text) {
 }
 
 // Example usage
-sendEmail('shawn.nimal@gmail.com', 'Hello', 'Hello from Node.js!');
+//sendEmail('shawn.nimal@gmail.com', 'Hello', 'Hello from Node.js!');
