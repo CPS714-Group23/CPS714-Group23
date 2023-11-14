@@ -3,6 +3,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const signupRoute = require("../routes/signup"); 
+const nodemailer = require('nodemailer');
 
 const PORT = process.env.PORT || 3001;
 
@@ -21,7 +22,7 @@ app.listen(PORT, () => {
 });
 
 
-const nodemailer = require('nodemailer');
+
 
 async function sendEmail(to, subject, text) {
     // Create a transporter
