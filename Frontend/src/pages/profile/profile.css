@@ -1,6 +1,6 @@
 button {
   margin-right: 10px;
-  margin-bottom: -10px;
+  margin-bottom: 30px;
 }
 
 .green-square {
@@ -10,12 +10,12 @@ button {
   background-image: url('flower.png');
   background-size: cover;
   margin-left: 300px;
-  margin-top: -730px;
+  margin-top: -690px;
   border-top-left-radius: 40px;
   border-bottom-left-radius: 40px;
 }
   
 .green-square.editing {
   height: 1050px;
-  margin-top: -970px;
+  margin-top: -900px;
 }

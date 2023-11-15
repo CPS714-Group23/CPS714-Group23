@@ -6,35 +6,37 @@ import './profile.css';
 
 const Profile = () => {
   const requiredFields = {
-    firstName: true,
-    lastName: true,
+    first_name: true,
+    last_name: true,
     email: true,
-    age: true,
-    address: true,
-    phoneNumber: true,
-    dateOfBirth: true,
+    home_address: true,
+    phone_number: true,
+    date_of_birth: true,
   };
 
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({
-    firstName: 'John',
-    lastName: 'Doe',
-    gender: 'Male',
-    email: 'johndoe@email.com',
-    age: 30,
-    address: '1 Smith Road',
-    phoneNumber: '123-456-7890',
-    dateOfBirth: '2001/05/20',
-  });
-
+  const [formData, setFormData] = useState({});
   const [savedData, setSavedData] = useState({});
-
+  const dateOfBirth = new Date(formData.date_of_birth);
+  const year = dateOfBirth.getFullYear();
+  const month = (dateOfBirth.getMonth() + 1).toString().padStart(2, '0'); 
+  const day = dateOfBirth.getDate().toString().padStart(2, '0');
+  const formattedDate = `${year}/${month}/${day}`;
+  
   useEffect(() => {
-    // Store the saved data when the user successfully saves changes
-    if (!isEditing) {
-      setSavedData(formData);
-    }
-  }, [isEditing, formData]);
+    const fetchProfileData = async () => {
+      try {
+        const response = await fetch('/profile/2'); // replace '123' with the actual patient_id
+        const data = await response.json();
+        setFormData(data);
+        setSavedData(data);
+      } catch (error) {
+        console.error('Error fetching profile data:', error);
+      }
+    };
+
+    fetchProfileData();
+  }, []);
 
   const toggleEditing = () => {
     setIsEditing(!isEditing);
@@ -48,18 +50,28 @@ const Profile = () => {
     });
   };
 
-  const handleSave = () => {
-    const emptyRequiredFields = Object.keys(requiredFields).filter(
-      (field) => requiredFields[field] && !formData[field]
-    );
+  const handleSave = async () => {
+    try {
+      const response = await fetch(`/profile/${formData.patient_id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
 
-    if (emptyRequiredFields.length === 0) {
-      toggleEditing();
+      if (response.ok) {
+        setSavedData(formData);
+        toggleEditing();
+      } else {
+        console.error('Error saving profile changes:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error saving profile changes:', error);
     }
   };
 
   const handleCancel = () => {
-    // Revert changes to the previously saved data and exit editing 
     if (isEditing) {
       setFormData(savedData);
     }
@@ -71,7 +83,7 @@ const Profile = () => {
       <Grid container spacing={3} style={{ transform: 'scale(0.87)', marginTop: '-120px' }}>
         <Grid item xs={12}>
           <Typography variant="h4" gutterBottom style={{ color: '#7B9B69', fontSize: '40px', fontWeight: '800', fontFamily: 'Times New Roman', transform: 'translateY(60px)' }}>
-            Hi, {formData.firstName}!
+            Hi, {formData.first_name}!
           </Typography>
           <Typography variant="h4" gutterBottom>
             <Avatar sx={{ width: 150, height: 150, backgroundColor: '#7B9B69', borderRadius: '10%', transform: 'translateY(60px)' }}>
@@ -120,7 +132,7 @@ const Profile = () => {
           </Box>
           <div>
             <span style={{ color: 'gray' }}>First name</span>
-            {requiredFields.firstName && !formData.firstName && (
+            {requiredFields.first_name && !formData.first_name && (
               <span style={{ color: 'red' }}> *</span>
             )}
             <br />
@@ -129,9 +141,9 @@ const Profile = () => {
                 <input
                   type="text"
                   id="firstName"
-                  name="firstName"
+                  name="first_name"
                   placeholder="John"
-                  value={formData.firstName}
+                  value={formData.first_name}
                   onChange={handleChange}
                   style={{
                     borderBottom: '2px solid #7B9B69',
@@ -141,7 +153,7 @@ const Profile = () => {
               </div>
             ) : (
               <span style={{ color: '#7B9B69', fontSize: '14px', fontWeight: '700' }}>
-                {formData.firstName}
+                {formData.first_name}
               </span>
             )}
           </div>
@@ -159,7 +171,7 @@ const Profile = () => {
                   id="lastName"
                   name="lastName"
                   placeholder="Doe"
-                  value={formData.lastName}
+                  value={formData.last_name}
                   onChange={handleChange}
                   style={{
                     borderBottom: '2px solid #7B9B69',
@@ -169,7 +181,7 @@ const Profile = () => {
               </div>
             ) : (
               <span style={{ color: '#7B9B69', fontSize: '14px', fontWeight: '700' }}>
-                {formData.lastName}
+                {formData.last_name}
               </span>
             )}
           </div>
@@ -235,7 +247,7 @@ const Profile = () => {
               </div>
             ) : (
               <span style={{ color: '#7B9B69', fontSize: '14px', fontWeight: '700' }}>
-                {formData.dateOfBirth}
+                {formattedDate}
               </span>
             )}
           </div>
@@ -269,34 +281,6 @@ const Profile = () => {
           </div>
           <br />
           <div>
-            <span style={{ color: 'gray' }}>Age</span>
-            {requiredFields.age && !formData.age && (
-              <span style={{ color: 'red' }}> *</span>
-            )}
-            <br />
-            {isEditing ? (
-              <div>
-                <input
-                  type="text"
-                  id="age"
-                  name="age"
-                  placeholder="30"
-                  value={formData.age}
-                  onChange={handleChange}
-                  style={{
-                    borderBottom: '2px solid #7B9B69',
-                    width: '230px',
-                  }}
-                />
-              </div>
-            ) : (
-              <span style={{ color: '#7B9B69', fontSize: '14px', fontWeight: '700' }}>
-                {formData.age}
-              </span>
-            )}
-          </div>
-          <br />
-          <div>
             <span style={{ color: 'gray' }}>Home address</span>
             {requiredFields.address && !formData.address && (
               <span style={{ color: 'red' }}> *</span>
@@ -309,7 +293,7 @@ const Profile = () => {
                   id="address"
                   name="address"
                   placeholder="1 Smith Road"
-                  value={formData.address}
+                  value={formData.home_address}
                   onChange={handleChange}
                   style={{
                     borderBottom: '2px solid #7B9B69',
@@ -319,7 +303,7 @@ const Profile = () => {
               </div>
             ) : (
               <span style={{ color: '#7B9B69', fontSize: '14px', fontWeight: '700' }}>
-                {formData.address}
+                {formData.home_address}
               </span>
             )}
           </div>
@@ -337,7 +321,7 @@ const Profile = () => {
                   id="phoneNumber"
                   name="phoneNumber"
                   placeholder="123-456-7890"
-                  value={formData.phoneNumber}
+                  value={formData.phone_number}
                   onChange={handleChange}
                   style={{
                     borderBottom: '2px solid #7B9B69',
@@ -347,7 +331,7 @@ const Profile = () => {
               </div>
             ) : (
               <span style={{ color: '#7B9B69', fontSize: '14px', fontWeight: '700' }}>
-                {formData.phoneNumber}
+                {formData.phone_number}
               </span>
             )}
           </div>

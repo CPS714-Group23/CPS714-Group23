@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const signupRoute = require("../routes/signup"); 
 const loginRoute = require("../routes/login"); 
 const schedulerRoute = require("../routes/scheduler");
+const profileRoute = require("../routes/profile");
 const app = express();
 
 require('dotenv').config();
@@ -20,6 +21,7 @@ app.get("/api", (req, res) => {
 app.use("/signup", signupRoute);
 app.use("/login", loginRoute);
 app.use("/api/scheduler", schedulerRoute);
+app.use("/profile", profileRoute); 
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
