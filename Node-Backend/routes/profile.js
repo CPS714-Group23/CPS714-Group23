@@ -1,7 +1,6 @@
 const express = require('express');
-const db = require('../db');
-
 const router = express.Router();
+const db = require('../db');
 
 router.get('/:patient_id', async (req, res) => {
   const { patient_id } = req.params;

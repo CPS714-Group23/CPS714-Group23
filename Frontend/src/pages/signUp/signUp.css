@@ -15,17 +15,17 @@
   margin: auto;
   transform: translateX(40%);
   margin-bottom: 20px;
-  margin-top: 40px; 
+  margin-top: 50px; 
 }
 
 .form-group {
-  margin-bottom: 10px;
+  margin-bottom: 4px;
   width: 90%
 }
 
 label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 2px;
 }
 
 input::placeholder {

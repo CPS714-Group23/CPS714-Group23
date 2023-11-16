@@ -17,17 +17,21 @@ const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({});
   const [savedData, setSavedData] = useState({});
-  const dateOfBirth = new Date(formData.date_of_birth);
-  const year = dateOfBirth.getFullYear();
-  const month = (dateOfBirth.getMonth() + 1).toString().padStart(2, '0'); 
-  const day = dateOfBirth.getDate().toString().padStart(2, '0');
-  const formattedDate = `${year}/${month}/${day}`;
-  
+  const [validationErrors, setValidationErrors] = useState({});
+ 
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const response = await fetch('/profile/2'); // replace '123' with the actual patient_id
+        // For testing purposes, set patient_id to 3 until the JVT token is implemented
+        const response = await fetch('/profile/3'); 
         const data = await response.json();
+        // Assume that data.date_of_birth is the date string
+        const parsedDate = new Date(data.date_of_birth);
+        // Extract the date portion
+        const dateOnly = parsedDate.toISOString().split('T')[0];
+        // Update the formData
+        data.date_of_birth = dateOnly;
+
         setFormData(data);
         setSavedData(data);
       } catch (error) {
@@ -49,25 +53,27 @@ const Profile = () => {
       [name]: value,
     });
   };
-
+  
   const handleSave = async () => {
-    try {
-      const response = await fetch(`/profile/${formData.patient_id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+    if (validateForm()) {
+      try {
+        const response = await fetch(`/profile/${formData.patient_id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
 
-      if (response.ok) {
-        setSavedData(formData);
-        toggleEditing();
-      } else {
-        console.error('Error saving profile changes:', response.statusText);
+        if (response.ok) {
+          setSavedData(formData);
+          toggleEditing();
+        } else {
+          console.error('Error saving profile changes:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error saving profile changes:', error);
       }
-    } catch (error) {
-      console.error('Error saving profile changes:', error);
     }
   };
 
@@ -78,11 +84,40 @@ const Profile = () => {
     toggleEditing();
   };
 
+  const isEmailValid = (email) => {
+    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    return emailPattern.test(email);
+  };
+
+  const isPhoneNumberValid = (phone) => {
+    const phonePattern = /^\d{3}-\d{3}-\d{4}$/;
+    return phonePattern.test(phone);
+  };
+
+  const validateForm = () => {
+    const errors = {};
+
+    // Validate phone number
+    if (!isPhoneNumberValid(formData.phone_number)) {
+      errors.phone_number = 'Invalid phone number';
+    }
+
+    // Validate email
+    if (!isEmailValid(formData.email)) {
+      errors.email = 'Invalid email address';
+    }
+
+    setValidationErrors(errors);
+
+    // Return true if there are no validation errors
+    return Object.keys(errors).length === 0;
+  };
+
   return (
     <Container maxWidth="md">
-      <Grid container spacing={3} style={{ transform: 'scale(0.87)', marginTop: '-120px' }}>
+      <Grid container spacing={3} style={{  marginTop: '-110px', transform: 'scale(0.87)' }}>
         <Grid item xs={12}>
-          <Typography variant="h4" gutterBottom style={{ color: '#7B9B69', fontSize: '40px', fontWeight: '800', fontFamily: 'Times New Roman', transform: 'translateY(60px)' }}>
+          <Typography variant="h4" gutterBottom style={{ color: '#7B9B69', fontSize: '35px', fontWeight: '800', fontFamily: 'Times New Roman', transform: 'translateY(60px)'}}>
             Hi, {formData.first_name}!
           </Typography>
           <Typography variant="h4" gutterBottom>
@@ -92,6 +127,7 @@ const Profile = () => {
           </Typography>
         </Grid>
         <Grid item xs={12} md={8}>
+          
           <Box mt={4} display="flex" justifyContent="left">
             {isEditing ? (
               <>
@@ -103,8 +139,9 @@ const Profile = () => {
                   padding: '8px 15px',
                   cursor: 'pointer',
                   textTransform: 'capitalize',
-                  transform: 'translateY(800px)',
+                  transform: 'translateY(750px)',
                   fontSize: '15px',
+                
                 }}>
                   Save Changes
                 </Button>
@@ -116,7 +153,7 @@ const Profile = () => {
                   padding: '0px 15px',
                   cursor: 'pointer',
                   textTransform: 'capitalize',
-                  transform: 'translateY(800px)',
+                  transform: 'translateY(752px)',
                   fontSize: '15px',
                   marginLeft: '12px',
                 }}>
@@ -160,7 +197,7 @@ const Profile = () => {
           <br />
           <div>
             <span style={{ color: 'gray' }}>Last name</span>
-            {requiredFields.lastName && !formData.lastName && (
+            {requiredFields.last_name && !formData.last_name && (
               <span style={{ color: 'red' }}> *</span>
             )}
             <br />
@@ -169,7 +206,7 @@ const Profile = () => {
                 <input
                   type="text"
                   id="lastName"
-                  name="lastName"
+                  name="last_name"
                   placeholder="Doe"
                   value={formData.last_name}
                   onChange={handleChange}
@@ -199,6 +236,7 @@ const Profile = () => {
                     borderRadius: '25px',
                     padding: '8px 20px',
                     cursor: 'pointer',
+                    marginTop: '15px'
                   }}
                   onClick={() => setFormData({ ...formData, gender: 'Male' })}
                 >
@@ -226,28 +264,28 @@ const Profile = () => {
           <br />
           <div>
             <span style={{ color: 'gray' }}>Date of Birth</span>
-            {requiredFields.dateOfBirth && !formData.dateOfBirth && (
+            {requiredFields.date_of_birth && !formData.date_of_birth && (
               <span style={{ color: 'red' }}> *</span>
             )}
             <br />
             {isEditing ? (
               <div>
                 <input
-                  type="text"
+                  type="date"
                   id="dob"
-                  name="dateOfBirth"
-                  placeholder="2001/05/20"
-                  value={formData.dateOfBirth}
+                  name='date_of_birth'
+                  value={formData.date_of_birth}
                   onChange={handleChange}
                   style={{
                     borderBottom: '2px solid #7B9B69',
                     width: '230px',
                   }}
                 />
+                
               </div>
             ) : (
               <span style={{ color: '#7B9B69', fontSize: '14px', fontWeight: '700' }}>
-                {formattedDate}
+                {formData.date_of_birth}
               </span>
             )}
           </div>
@@ -272,6 +310,9 @@ const Profile = () => {
                     width: '230px',
                   }}
                 />
+                {validationErrors.email && (
+                  <span style={{ color: 'red', fontSize: '12px' }}>{validationErrors.email}</span>
+                )}
               </div>
             ) : (
               <span style={{ color: '#7B9B69', fontSize: '14px', fontWeight: '700' }}>
@@ -282,7 +323,7 @@ const Profile = () => {
           <br />
           <div>
             <span style={{ color: 'gray' }}>Home address</span>
-            {requiredFields.address && !formData.address && (
+            {requiredFields.home_address && !formData.home_address && (
               <span style={{ color: 'red' }}> *</span>
             )}
             <br />
@@ -291,7 +332,7 @@ const Profile = () => {
                 <input
                   type="text"
                   id="address"
-                  name="address"
+                  name="home_address"
                   placeholder="1 Smith Road"
                   value={formData.home_address}
                   onChange={handleChange}
@@ -310,7 +351,7 @@ const Profile = () => {
           <br />
           <div>
             <span style={{ color: 'gray' }}>Phone number</span>
-            {requiredFields.phoneNumber && !formData.phoneNumber && (
+            {requiredFields.phone_number && !formData.phone_number && (
               <span style={{ color: 'red' }}> *</span>
             )}
             <br />
@@ -319,7 +360,7 @@ const Profile = () => {
                 <input
                   type="text"
                   id="phoneNumber"
-                  name="phoneNumber"
+                  name="phone_number"
                   placeholder="123-456-7890"
                   value={formData.phone_number}
                   onChange={handleChange}
@@ -328,6 +369,9 @@ const Profile = () => {
                     width: '230px',
                   }}
                 />
+                {validationErrors.phone_number && (
+                  <span style={{ color: 'red', fontSize: '12px' }}>{validationErrors.phone_number}</span>
+                )}
               </div>
             ) : (
               <span style={{ color: '#7B9B69', fontSize: '14px', fontWeight: '700' }}>
@@ -339,7 +383,6 @@ const Profile = () => {
         </Grid>
       </Grid>
     </Container>
-    
   );
 };
 

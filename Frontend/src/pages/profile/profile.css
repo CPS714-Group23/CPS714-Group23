@@ -1,20 +1,26 @@
 button {
   margin-right: 10px;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
 }
 
 .green-square {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
   width: 200%; 
   max-width: 2000px; 
-  height: 760px;
-  background-image: url('flower.png');
+  height: 720px;
+  background-image: url('flowers.png');
   background-size: cover;
   margin-left: 300px;
-  margin-top: -690px;
+  margin-top: -650px;
   border-top-left-radius: 40px;
   border-bottom-left-radius: 40px;
-}
+  background-size: contain;
   
+  
+}
+
 .green-square.editing {
   height: 1050px;
   margin-top: -900px;

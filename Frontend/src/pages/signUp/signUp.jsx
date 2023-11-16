@@ -12,6 +12,9 @@ function SignUp() {
     dateOfBirth: '',
     phone: '',
     email: '',
+    licenseNumber: '',
+    hiredDate: '',
+    userType: '', 
     password: '',
     confirmPassword: '',
   });
@@ -23,10 +26,15 @@ function SignUp() {
   const isFieldEmpty = (field) => {
     return field === '';
   };
-
+  
   const isEmailValid = (email) => {
     const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     return emailPattern.test(email);
+  };
+
+  const isLicenseNumberValid = (licenseNumber) => {
+    const licenseNumberPattern = /^\d{10}$/;
+    return licenseNumberPattern.test(licenseNumber);
   };
 
   const isPhoneNumberValid = (phone) => {
@@ -34,7 +42,7 @@ function SignUp() {
     return phonePattern.test(phone);
   };
 
-  const isDateOfBirthValid = (dateOfBirth) => {
+  const isDateValid = (dateOfBirth) => {
     const datePattern = /^(?:19|20)\d\d\/(0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])$/;
     return datePattern.test(dateOfBirth);
   };
@@ -55,11 +63,23 @@ function SignUp() {
     if (!isEmailValid(formData.email)) {
       errors.email = 'Invalid email address';
     }
-
+   
     // Validate date of birth
-    if (!isDateOfBirthValid(formData.dateOfBirth)) {
+    if (!isDateValid(formData.dateOfBirth)) {
       errors.dateOfBirth = 'Invalid date of birth';
     }
+
+    // Validate hire date 
+    if (formData.userType === 'Pharmacist') {
+      if (!isDateValid(formData.hiredDate)) {
+        errors.hiredDate = 'Invalid date';
+    }}
+
+    // Validate license number 
+    if (formData.userType === 'Pharmacist') {
+      if (!isLicenseNumberValid(formData.licenseNumber)) {
+        errors.licenseNumber = 'License number must be 10 digits';
+    }}
 
     // Validate password
     if (!isPasswordValid(formData.password)) {
@@ -84,14 +104,22 @@ function SignUp() {
       'firstName',
       'lastName',
       'gender',
-      'homeAddress',
       'dateOfBirth',
       'phone',
       'email',
+      'userType',
       'password',
       'confirmPassword',
     ];
     const areRequiredFieldsFilled = requiredFields.every((field) => !isFieldEmpty(formData[field]));
+
+    if (formData.userType === 'Pharmacist') {
+      requiredFields.push('licenseNumber', 'hiredDate');
+    }
+    
+    if (formData.userType === 'Patient') {
+      requiredFields.push('homeAddress');
+    }
 
     if (areRequiredFieldsFilled) {
       if (validateForm()) {
@@ -113,6 +141,8 @@ function SignUp() {
               dateOfBirth: '',
               phone: '',
               email: '',
+              userType: '',
+              licenseNumber: '',
               password: '',
               confirmPassword: '',
             });
@@ -154,7 +184,7 @@ function SignUp() {
     <div className="grid-container">
       <div className="square"></div>
       <form onSubmit={handleSubmit}>
-      {successMessage && (
+        {successMessage && (
           <Alert severity="success" onClose={handleSuccessAlertClose}>
             {successMessage}
           </Alert>
@@ -235,22 +265,43 @@ function SignUp() {
             </div>
           </div>
           <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: '50px' }}>
-            <div className="form-group">
-              <label htmlFor="homeAddress" style={{ color: '#7B9B69' }}>
-                Home Address{isFieldEmpty(formData.homeAddress) ? <span style={{ color: 'red' }}>*</span> : null}
-              </label>
-              <input
-                type="text"
-                id="homeAddress"
-                name="homeAddress"
-                placeholder="1 Smith Road"
-                value={formData.homeAddress}
-                onChange={handleChange}
-                style={{
-                  borderBottom: '2px solid #7B9B69',
-                }}
-              />
-            </div>
+            {formData.userType !== 'Pharmacist' && (
+              <div className="form-group">
+                <label htmlFor="homeAddress" style={{ color: '#7B9B69' }}>
+                  Home Address{isFieldEmpty(formData.homeAddress) ? <span style={{ color: 'red' }}>*</span> : null}
+                </label>
+                <input
+                  type="text"
+                  id="homeAddress"
+                  name="homeAddress"
+                  placeholder="1 Smith Road"
+                  value={formData.homeAddress}
+                  onChange={handleChange}
+                  style={{
+                    borderBottom: '2px solid #7B9B69',
+                  }}
+                />
+              </div>
+            )}
+            {formData.userType === 'Pharmacist' && (
+              <div className="form-group">
+                <label htmlFor="hiredDate" style={{ color: '#7B9B69' }}>
+                  Hire Date{isFieldEmpty(formData.hiredDate) ? <span style={{ color: 'red' }}>*</span> : null}
+                </label>
+                <input
+                  type="text"
+                  id="hiredDate"
+                  name="hiredDate"
+                  placeholder="YYYY/MM/DD"
+                  value={formData.hiredDate}
+                  onChange={handleChange}
+                  style={{
+                    borderBottom: '2px solid #7B9B69',
+                  }}
+                />
+                {validationErrors.hiredDate && <p style={{ color: 'red', fontSize: '11px', marginTop: '-5px' }}>{validationErrors.hiredDate}</p>}
+              </div>
+            )}
             <div className="form-group">
               <label htmlFor="dateOfBirth" style={{ color: '#7B9B69' }}>
                 Date of Birth{isFieldEmpty(formData.dateOfBirth) ? <span style={{ color: 'red' }}>*</span> : null}
@@ -266,9 +317,67 @@ function SignUp() {
                   borderBottom: '2px solid #7B9B69',
                 }}
               />
-              {validationErrors.dateOfBirth && <p style={{ color: 'red', fontSize:'11px', marginTop: '-5px'}}>{validationErrors.dateOfBirth}</p>}
+              {validationErrors.dateOfBirth && <p style={{ color: 'red', fontSize: '11px', marginTop: '-5px' }}>{validationErrors.dateOfBirth}</p>}
+            </div>
+            <div className="form-group">
+              <label htmlFor="userType" style={{ color: '#7B9B69' }}>
+                User Type{isFieldEmpty(formData.userType) ? <span style={{ color: 'red' }}>*</span> : null}
+              </label>
+              <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: '5px' }}>
+                <button
+                  type="button"
+                  style={{
+                    border: '1px solid #7B9B69',
+                    color: formData.userType === 'Patient' ? 'white' : '#7B9B69',
+                    backgroundColor: formData.userType === 'Patient' ? '#7B9B69' : 'white',
+                    borderRadius: '15px',
+                    padding: '5px 20px',
+                    cursor: 'pointer',
+                    transition: 'background-color 0.2s',
+                  }}
+                  onClick={() => setFormData({ ...formData, userType: 'Patient' })}
+                >
+                  Patient
+                </button>
+                <button
+                  type="button"
+                  style={{
+                    border: '1px solid #7B9B69',
+                    color: formData.userType === 'Pharmacist' ? 'white' : '#7B9B69',
+                    backgroundColor: formData.userType === 'Pharmacist' ? '#7B9B69' : 'white',
+                    borderRadius: '15px',
+                    padding: '5px 20px',
+                    cursor: 'pointer',
+                    transition: 'background-color 0.2s',
+                  }}
+                  onClick={() => setFormData({ ...formData, userType: 'Pharmacist' })}
+                >
+                  Pharmacist
+                </button>
+              </div>
             </div>
           </div>
+          {formData.userType === 'Pharmacist' && (
+            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: '50px' }}>
+              <div className="form-group" style={{ marginRight: '80px' }}>
+                <label htmlFor="licenseNumber" style={{ color: '#7B9B69' }}>
+                  License Number{isFieldEmpty(formData.licenseNumber) ? <span style={{ color: 'red' }}>*</span> : null}
+                </label>
+                <input
+                  type="text"
+                  id="licenseNumber"
+                  name="licenseNumber"
+                  placeholder="Enter license number"
+                  value={formData.licenseNumber}
+                  onChange={handleChange}
+                  style={{
+                    borderBottom: '2px solid #7B9B69',
+                  }}
+                />
+                {validationErrors.licenseNumber && <p style={{ color: 'red', fontSize: '11px', marginTop: '-5px' }}>{validationErrors.licenseNumber}</p>}
+              </div>
+            </div>
+          )}
           <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: '50px' }}>
             <div className="form-group">
               <label htmlFor="phone" style={{ color: '#7B9B69' }}>
@@ -374,7 +483,7 @@ function SignUp() {
         </p>
       </form>
     </div>
-  );
+  );  
 }
 
 export default SignUp;
