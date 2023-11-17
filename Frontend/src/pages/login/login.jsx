@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./login.css";
 
 function Login() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: "", password: "" });
-
   const [validationErrors, setValidationErrors] = useState({});
   const [errorMessage, setErrorMessage] = useState(null); 
 
@@ -63,9 +64,12 @@ function Login() {
               email: '',
               password: '',
             });
+            const data = await response.json();
+            console.log(data.token);
             setValidationErrors({});
             setErrorMessage(null); 
-          
+            sessionStorage.setItem('token', data.token)
+            navigate("/home");
           } else {
             const data = await response.json();
             if (data.error) {
