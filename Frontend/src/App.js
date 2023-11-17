@@ -12,6 +12,7 @@ import PharmaceuticalPortal from './pages/home/PharmaceuticalPortal';
 import PharmaceuticalPortalLog from './pages/home-loggedin/PharmaceuticalPortalLog';
 import './App.css';
 import Scheduler from './pages/scheduler/scheduler';
+import PrescriptionSubmit from './pages/prescription-submit/prescriptionsubmit';
 
 const routesConfig = [
   {
@@ -45,6 +46,10 @@ const routesConfig = [
   {
     path: '/scheduler',
     element: <Scheduler />, 
+  },
+  {
+    path: '/prescriptionsubmit',
+    element: <PrescriptionSubmit />, 
   },
 ];
 

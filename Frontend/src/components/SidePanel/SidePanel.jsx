@@ -29,7 +29,7 @@ const menuItemsTop = [
 const menuItemsMiddle = [
   {name: 'Scheduler', icon: <Calendar />, path: '/scheduler'},
   {name: 'Drug supply tracker', icon: <PrescriptionBottle />, path: '/3'},
-  {name: 'Prescription', icon: <RxFile />, path: '/4'},
+  {name: 'Prescription', icon: <RxFile />, path: '/prescriptionsubmit'},
   {name: 'Drug interaction checker', icon: <Analytics />, path: '/5'},
   {name: 'Side effect reporting', icon: <Analytics />, path: '/6'},
 ];
