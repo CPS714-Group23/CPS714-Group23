@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Navigate, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Nav/Nav';
 import SidePanel from './components/SidePanel/SidePanel';
 import PortalNav from './components/PortalNav/PortalNav';
@@ -12,15 +12,12 @@ import PharmaceuticalPortal from './pages/home/PharmaceuticalPortal';
 import PharmaceuticalPortalLog from './pages/home-loggedin/PharmaceuticalPortalLog';
 import './App.css';
 import Scheduler from './pages/scheduler/scheduler';
+import PrivateRoute from './privateroute';
 
 const routesConfig = [
   {
     path: '/',
     element: <PharmaceuticalPortal />, 
-  },
-  {
-    path: '/home',
-    element: <PharmaceuticalPortalLog />, 
   },
   {
     path: '/about',
@@ -48,16 +45,20 @@ const routesConfig = [
   },
 ];
 
-function App() {
+function App() {    
   return (
     <>
       <Navbar /> 
       {/* <PortalNav />*/}
       {/* <SidePanel /> */}
+      
       <Routes>
         {routesConfig.map((route, index) => (
           <Route key={index} path={route.path} element={route.element} />
         ))}
+        <Route exact path='/home' element={<PrivateRoute/>}>
+          <Route exact path='/home' component={PharmaceuticalPortalLog} />
+        </Route>
       </Routes>
     </>
   );
