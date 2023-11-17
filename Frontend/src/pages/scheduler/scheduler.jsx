@@ -1,54 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
-// import interactionPlugin from "@fullcalendar/interaction";
 import "./scheduler.css";
 
 function Scheduler() {
-  // Sample events data
-  const [events, setEvents] = useState([
-    {
-      id: 'event-1',
-      title: "Medication A",
-      startRecur: '2023-11-20',
-      endRecur: '2023-12-04',
-      startTime: '9:00:00',
-      dosage: "2"
-    },
-    {
-      id: 'event-2',
-      title: "Medication B",
-      startRecur: '2023-11-27',
-      endRecur: '2023-12-15',
-      startTime: '9:00:00',
-      dosage: "1"
-    }
-  ]);
+  const [events, setEvents] = useState([]);
 
-  const addEvent = async (newEvent) => {
-    try {
-      const response = await fetch("/api/scheduler/add", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newEvent),
-      });
-
-      if (response.ok) {
-        const addedEvent = await response.json();
-        setEvents((currentEvents) => [...currentEvents, addedEvent.event]);
-      } else {
-        throw new Error("Network response was not ok.");
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:3001/api/scheduler/events"
+        );
+        if (response.ok) {
+          const fetchedEvents = await response.json();
+          const transformedEvents = fetchedEvents.map((event) => ({
+            title: event.title,
+            startRecur: event.start_recur,
+            endRecur: event.end_recur,
+            startTime: "9:00:00",
+            dosage: event.dosage,
+          }));
+          setEvents(transformedEvents);
+        } else {
+          throw new Error("Failed to fetch events");
+        }
+      } catch (error) {
+        console.error("Error fetching events:", error);
       }
-    } catch (error) {
-      console.error(
-        "There has been a problem with your fetch operation:",
-        error
-      );
-    }
-  };
+    };
 
+    fetchEvents();
+  }, []);
 
   function renderEventContent(eventInfo) {
     return (
@@ -60,50 +43,20 @@ function Scheduler() {
       </>
     );
   }
-  
 
-  // function handleDateClick(info) {
-  //   console.log("Date selected:", info.dateStr);
-  // }
-
-  const handleAddFormSubmit = async (event) => {
-    event.preventDefault();
-    const newEvent = {
-      id: `event-${events.length + 1}`, // Generating a new unique ID
-      title: event.target.title.value,
-      startRecur: event.target.startRecur.value,
-      endRecur: event.target.endRecur.value,
-      startTime: event.target.startTime.value,
-      dosage: event.target.dosage.value,
-    };
-    await addEvent(newEvent);
-  };
-  
-  
   return (
     <div>
       <h1>
         <b>Scheduler</b>
       </h1>
       <FullCalendar
-        plugins={[dayGridPlugin]} //, interactionPlugin]}
-        // dateClick={handleDateClick}
-        selectable={false} // Set to true to have green bottom border
+        plugins={[dayGridPlugin]} 
+        selectable={false}
         initialView="dayGridMonth"
         weekends={true}
         events={events}
-        eventContent={renderEventContent} // Render custom event content
+        eventContent={renderEventContent}
       />
-
-      <form onSubmit={handleAddFormSubmit}>
-      <input type="text" name="title" placeholder="Medication Name" required />
-      <input type="date" name="startRecur" placeholder="Start Date" required />
-      <input type="date" name="endRecur" placeholder="End Date" required />
-      <input type="time" name="startTime" placeholder="Time" required />
-      <input type="number" name="dosage" placeholder="Dosage" required />
-      <button type="submit">Add Medication</button>
-    </form>
-
     </div>
   );
 }

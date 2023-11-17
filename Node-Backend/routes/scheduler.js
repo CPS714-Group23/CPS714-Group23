@@ -1,65 +1,45 @@
 const express = require('express');
 const router = express.Router();
+const db = require('../db');
 
-// mock database storage
-let events = [];
-
-async function insertEventToDatabase(eventData) {
-  const newEvent = { id: eventData.title, ...eventData };
-  events.push(newEvent);
-  return newEvent;
-}
-
-async function removeEventFromDatabase(eventId) {
-  events = events.filter(event => event.id !== eventId);
-  return { id: eventId };
-}
-
-async function updateEventInDatabase(eventId, updatedEventData) {
-  events = events.map(event => {
-    if (event.id === eventId) {
-      return { ...event, ...updatedEventData };
-    }
-    return event;
-  });
-  return { id: eventId, ...updatedEventData };
-}
+router.get('/events', async (req, res) => {
+  try {
+    const queryResult = await db.query('SELECT * FROM patientmedication'); // Adjust the query based on user id
+    res.json(queryResult.rows);
+  } catch (error) {
+    console.error('Error fetching events:', error);
+    res.status(500).json({ message: "Error fetching events", error: error.message });
+  }
+});
 
 router.post('/add', async (req, res) => {
   try {
     const eventData = req.body;
-    const addedEvent = await insertEventToDatabase(eventData);
+    const insertQuery = `
+      INSERT INTO patientmedication (title, drug_strength, dosage, start_recur, end_recur, receipt_number, date_issued, doctor_name, hospital_name, hospital_address)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      RETURNING *;
+    `;
 
-    res.json({ message: "Event added successfully", event: addedEvent });
+    const values = [
+      eventData.title,
+      eventData.drugStrength,
+      eventData.dosage,
+      eventData.startRecur,
+      eventData.endRecur,
+      eventData.receiptNumber,
+      eventData.dateIssued,
+      eventData.doctorName,
+      eventData.hospitalName,
+      eventData.hospitalAddress
+    ];
+
+    const result = await db.query(insertQuery, values);
+    res.status(201).json({ message: "Event added successfully", event: result.rows[0] });
   } catch (error) {
     console.error('Error adding event:', error);
     res.status(500).json({ message: "Error adding event", error: error.message });
   }
 });
 
-router.delete('/remove/:id', async (req, res) => {
-    try {
-      const eventId = req.params.id;
-      const removedEvent = await removeEventFromDatabase(eventId);
-  
-      res.json({ message: "Event removed successfully", event: removedEvent });
-    } catch (error) {
-      console.error('Error removing event:', error);
-      res.status(500).json({ message: "Error removing event", error: error.message });
-    }
-  });
-  
-  router.put('/update/:id', async (req, res) => {
-    try {
-      const eventId = req.params.id;
-      const eventData = req.body;
-      const updatedEvent = await updateEventInDatabase(eventId, eventData);
-  
-      res.json({ message: "Event updated successfully", event: updatedEvent });
-    } catch (error) {
-      console.error('Error updating event:', error);
-      res.status(500).json({ message: "Error updating event", error: error.message });
-    }
-  });
-  
 module.exports = router;
