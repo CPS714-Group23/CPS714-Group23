@@ -13,6 +13,7 @@ import PharmaceuticalPortalLog from './pages/home-loggedin/PharmaceuticalPortalL
 import './App.css';
 import Scheduler from './pages/scheduler/scheduler';
 import PrescriptionSubmit from './pages/prescription-submit/prescriptionsubmit';
+import DrugInteractionChecker from './pages/drugInteractionChecker/drugInteractionChecker';
 
 const routesConfig = [
   {
@@ -51,6 +52,10 @@ const routesConfig = [
     path: '/prescriptionsubmit',
     element: <PrescriptionSubmit />, 
   },
+  {
+    path: '/drug-interaction-checker',
+    element: <DrugInteractionChecker />, 
+  }
 ];
 
 function App() {
