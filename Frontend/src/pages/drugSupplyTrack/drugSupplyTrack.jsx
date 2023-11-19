@@ -9,8 +9,6 @@ const DrugSupplyTracker = () => {
   const [expandedCard, setExpandedCard] = useState(null);
 
   useEffect(() => {
-    // Fetch medications from your PostgreSQL database and update the state
-    // Replace the following line with your actual data fetching logic
     setMedications([
       {
         id: 1,
@@ -63,7 +61,6 @@ const DrugSupplyTracker = () => {
       </Typography>
       {medications.map((medication, index) => (
         <div key={medication.id} style={{ display: 'flex', marginBottom: '10px' }}>
-          {/* Main Card */}
           <Card
             style={{
               borderRadius: '50px',
@@ -71,13 +68,12 @@ const DrugSupplyTracker = () => {
               color: index === 0 ? 'white' : '#7B9B69',
               fontFamily: 'Times New Roman, serif',
               transform: 'scale(0.9)',
-              width: '450px', // Adjust the width as needed
+              width: '450px',
               marginRight: '10px',
               position: 'relative',
             }}
           >
             <CardContent>
-              {/* Medication Information */}
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <div
                   style={{
@@ -111,14 +107,12 @@ const DrugSupplyTracker = () => {
                   </Typography>
                 </div>
               </div>
-
-              {/* Divider Line */}
               <div
                 style={{
                   display: 'flex',
                   alignItems: 'center',
                   width: '100%',
-                  margin: '9px 0', // Adjust margin for the first card
+                  margin: '9px 0',
                 }}
               >
                 <div style={{ flex: '1' }} />
@@ -133,7 +127,6 @@ const DrugSupplyTracker = () => {
                 </div>
               </div>
 
-              {/* Consumption Information */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ textAlign: 'center', marginRight: '10px' }}>
                   <Typography variant="h4" style={{ fontWeight: 'bold', marginLeft: '38px' }}>50</Typography>
@@ -148,10 +141,8 @@ const DrugSupplyTracker = () => {
             </CardContent>
           </Card>
 
-          {/* Expanded Content */}
           <Collapse in={expandedCard === index}>
             <CardContent>
-              {/* Medication Information */}
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <div
                   style={{
@@ -171,7 +162,7 @@ const DrugSupplyTracker = () => {
                 </div>
                 <div>
                   <Typography variant="h6">{medication.title}</Typography>
-                  <Typography variant="body1" style={{ wordSpacing: '2em', color:'#acacac' }}>
+                  <Typography variant="body1" style={{ wordSpacing: '2em', color: '#acacac' }}>
                     Strength   Does    Duration
                   </Typography>
                   <Typography variant="body1" style={{ wordSpacing: '2em' }}>
@@ -186,11 +177,9 @@ const DrugSupplyTracker = () => {
                     Start Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;End Date
                   </Typography>
                   <Typography variant="body1">2023/04/01&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2023/04/01</Typography>
-
                 </div>
               </div>
 
-              {/* Divider Line */}
               <div
                 style={{
                   display: 'flex',
@@ -205,13 +194,10 @@ const DrugSupplyTracker = () => {
                     style={{ padding: '0', margin: '0' }}
                     onClick={() => handleExpandCard(index)}
                     aria-expanded={expandedCard === index}
-                  >
-
-                  </IconButton>
+                  />
                 </div>
               </div>
 
-              {/* Consumption Information */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ textAlign: 'center', marginRight: '45px' }}>
                   <Typography variant="h4" style={{ fontWeight: 'bold', marginLeft: '50px' }}>50</Typography>
