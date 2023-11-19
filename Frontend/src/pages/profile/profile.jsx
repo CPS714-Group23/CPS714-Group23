@@ -9,7 +9,7 @@ const Profile = () => {
     first_name: true,
     last_name: true,
     email: true,
-    home_address: true,
+    address: true,
     phone_number: true,
     date_of_birth: true,
   };
@@ -23,7 +23,7 @@ const Profile = () => {
     const fetchProfileData = async () => {
       try {
         // For testing purposes, set patient_id to 3 until the JVT token is implemented
-        const response = await fetch('/profile/3'); 
+        const response = await fetch('/profile/2'); 
         const data = await response.json();
         // Assume that data.date_of_birth is the date string
         const parsedDate = new Date(data.date_of_birth);
@@ -323,7 +323,7 @@ const Profile = () => {
           <br />
           <div>
             <span style={{ color: 'gray' }}>Home address</span>
-            {requiredFields.home_address && !formData.home_address && (
+            {requiredFields.address && !formData.address && (
               <span style={{ color: 'red' }}> *</span>
             )}
             <br />
@@ -332,9 +332,9 @@ const Profile = () => {
                 <input
                   type="text"
                   id="address"
-                  name="home_address"
+                  name="address"
                   placeholder="1 Smith Road"
-                  value={formData.home_address}
+                  value={formData.address}
                   onChange={handleChange}
                   style={{
                     borderBottom: '2px solid #7B9B69',
@@ -344,7 +344,7 @@ const Profile = () => {
               </div>
             ) : (
               <span style={{ color: '#7B9B69', fontSize: '14px', fontWeight: '700' }}>
-                {formData.home_address}
+                {formData.address}
               </span>
             )}
           </div>

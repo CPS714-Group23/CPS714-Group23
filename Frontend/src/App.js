@@ -14,6 +14,7 @@ import './App.css';
 import Scheduler from './pages/scheduler/scheduler';
 import PrescriptionSubmit from './pages/prescription-submit/prescriptionsubmit';
 import DrugInteractionChecker from './pages/drugInteractionChecker/drugInteractionChecker';
+import DrugSupplyTracker from './pages/drugSupplyTrack/drugSupplyTrack';
 
 const routesConfig = [
   {
@@ -55,15 +56,19 @@ const routesConfig = [
   {
     path: '/drug-interaction-checker',
     element: <DrugInteractionChecker />, 
+  },
+  {
+    path: '/drug-supply-tracker',
+    element: <DrugSupplyTracker />, 
   }
 ];
 
 function App() {
   return (
     <>
-      <Navbar /> 
-      {/* <PortalNav />*/}
-      {/* <SidePanel /> */}
+      {/*<Navbar /> */}
+      <PortalNav />
+       <SidePanel /> 
       <Routes>
         {routesConfig.map((route, index) => (
           <Route key={index} path={route.path} element={route.element} />

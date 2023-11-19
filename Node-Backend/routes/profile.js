@@ -20,8 +20,8 @@ router.put('/:patient_id', async (req, res) => {
   const updatedProfile = req.body;
 
   try {
-    await db.query('UPDATE patient SET first_name=$1, last_name=$2, gender=$3, home_address=$4, date_of_birth=$5, phone_number=$6, email=$7 WHERE patient_id=$8',
-      [updatedProfile.first_name, updatedProfile.last_name, updatedProfile.gender, updatedProfile.home_address, updatedProfile.date_of_birth, updatedProfile.phone_number, updatedProfile.email, patient_id]);
+    await db.query('UPDATE patient SET first_name=$1, last_name=$2, gender=$3, address=$4, date_of_birth=$5, phone_number=$6, email=$7 WHERE patient_id=$8',
+      [updatedProfile.first_name, updatedProfile.last_name, updatedProfile.gender, updatedProfile.address, updatedProfile.date_of_birth, updatedProfile.phone_number, updatedProfile.email, patient_id]);
 
     res.json({ success: true, message: 'Profile updated successfully' });
   } catch (error) {
