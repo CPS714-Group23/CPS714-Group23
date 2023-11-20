@@ -1,55 +1,38 @@
-// server/index.js
-
 const express = require("express");
 const bodyParser = require("body-parser");
 const signupRoute = require("../routes/signup"); 
-const nodemailer = require('nodemailer');
+const loginRoute = require("../routes/login"); 
+const schedulerRoute = require("../routes/scheduler");
+const profileRoute = require("../routes/profile");
+const app = express();
+
+require('dotenv').config();
+
+const client = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_TOKEN);
 
 const PORT = process.env.PORT || 3001;
-
-const app = express();
 
 app.use(bodyParser.json());
 
 app.get("/api", (req, res) => {
-    res.json({ message: "Hello from server!" });
+  res.json({ message: "Hello from server!" });
 });
 
 app.use("/signup", signupRoute);
+app.use("/login", loginRoute);
+app.use("/api/scheduler", schedulerRoute);
+app.use("/profile", profileRoute); 
 
 app.listen(PORT, () => {
-  console.log(`Server listening on ${PORT}`);
+  console.log(`Server listening on port ${PORT}`);
 });
 
-
-
-
-async function sendEmail(to, subject, text) {
-    // Create a transporter
-    let transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: 'shawnb.nimal22@gmail.com', // Replace with your Gmail address
-            pass: 'dsph kztb wnab aspw' // Replace with your app-specific password
-        }
-    });
-
-    // Set email options
-    let mailOptions = {
-        from: 'shawnb.nimal22@gmail.com', // Replace with your Gmail address
-        to: to, // Recipient email
-        subject: subject, // Email subject
-        text: text, // Email body text
-    };
-
-    // Send email
-    try {
-        let info = await transporter.sendMail(mailOptions);
-        console.log('Message sent: %s', info.messageId);
-    } catch (error) {
-        console.error('Error sending email:', error);
-    }
+function sendTextMessage(msg){
+  client.messages.create({
+      body: msg,
+      to: '+16479396641',
+      from: '+12015814244'
+  }).then(message => console.log(message))
+  // implement fallback code
+  .catch(error => console.log(error))
 }
-
-// Example usage
-//sendEmail('shawn.nimal@gmail.com', 'Hello', 'Hello from Node.js!');

@@ -15,17 +15,17 @@
   margin: auto;
   transform: translateX(40%);
   margin-bottom: 20px;
-  margin-top: 40px; 
+  margin-top: 50px; 
 }
 
 .form-group {
-  margin-bottom: 10px;
+  margin-bottom: 4px;
   width: 90%
 }
 
 label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 2px;
 }
 
 input::placeholder {
@@ -37,6 +37,7 @@ button {
   padding: 10px 20px;
   border: none;
   cursor: pointer;
+  gap: -100px;
 }
 
 input:focus:not([read-only]) {
@@ -84,6 +85,17 @@ input:focus:not([read-only]) {
     max-width: 700px;
     margin: auto;
     transform: translateX(16%);
+    margin-bottom: 20px;
+    margin-top: 40px; 
+  }
+}
+
+@media (min-width: 1400px) and (max-width: 1800px) {
+  .grid-container {
+    align-items: center;
+    max-width: 700px;
+    margin: auto;
+    transform: translateX(58%);
     margin-bottom: 20px;
     margin-top: 40px; 
   }
