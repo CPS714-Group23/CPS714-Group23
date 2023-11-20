@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import { Button } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import { styled } from '@mui/material';
 import './drugInteractionChecker.css';
 
 const columnsA = [
@@ -13,26 +12,31 @@ const columnsB = [
   { field: 'name', headerName: 'Drug B', width: 200 }
 ];
 
-const data = [
-  { id: 1, name: 'MedicineA' },
-  { id: 2, name: 'MedicineB' },
-  { id: 3, name: 'MedicineC' },
-  { id: 4, name: 'MedicineD' },
-  { id: 5, name: 'MedicineE' },
-  { id: 6, name: 'MedicineF' },
-  { id: 7, name: 'MedicineG' },
-  { id: 8, name: 'MedicineH' },
-  { id: 9, name: 'MedicineI' }
-];
-
 const DrugInteractionChecker = () => {
 
-  const [rowSelectionAModel, setRowSelectionAModel] = React.useState([]);
-  const [rowSelectionBModel, setRowSelectionBModel] = React.useState([]);
-  const [medicineSelectedA, setMedicineSelectedA] = React.useState([]);
-  const [medicineSelectedB, setMedicineSelectedB] = React.useState([]);
-  const [isCompare, setIsCompare] = React.useState([]);
+  const [medications, setMedications] = useState([]);
+  const [medicationInteraction, setMedicationInteraction] = useState([]);
+  const [rowSelectionAModel, setRowSelectionAModel] = useState([]);
+  const [rowSelectionBModel, setRowSelectionBModel] = useState([]);
+  const [medicineSelectedA, setMedicineSelectedA] = useState([]);
+  const [medicineSelectedB, setMedicineSelectedB] = useState([]);
+  const [isCompare, setIsCompare] = useState([]);
   
+  useEffect(() => {
+    //replace with fetching medications from the backend
+    setMedications([
+      { id: 1, name: 'MedicineA' },
+      { id: 2, name: 'MedicineB' },
+      { id: 3, name: 'MedicineC' },
+      { id: 4, name: 'MedicineD' },
+      { id: 5, name: 'MedicineE' },
+      { id: 6, name: 'MedicineF' },
+      { id: 7, name: 'MedicineG' },
+      { id: 8, name: 'MedicineH' },
+      { id: 9, name: 'MedicineI' }
+    ]);
+  }, []);
+
   const onCompare = (drugAId, drugBId) => {
     
     if (drugAId === undefined || drugBId === undefined || drugAId === drugBId) {
@@ -40,8 +44,10 @@ const DrugInteractionChecker = () => {
     }
     else {
       setIsCompare(true);
-      setMedicineSelectedA(data.find((item) => item.id === drugAId).name);
-      setMedicineSelectedB(data.find((item) => item.id === drugBId).name);
+      setMedicineSelectedA(medications.find((item) => item.id === drugAId).name);
+      setMedicineSelectedB(medications.find((item) => item.id === drugBId).name);
+      //replace with fetching interaction from the backend, using medication selection A and B as inputs
+      setMedicationInteraction("Text explaining the interaction between " + medications.find((item) => item.id === drugAId).name + " and " + medications.find((item) => item.id === drugBId).name + ".\n Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.");
     }
   }
 
@@ -55,7 +61,7 @@ const DrugInteractionChecker = () => {
           <h1 className='subHeaderText'>{medicineSelectedA}</h1>
           <h1 className='subHeaderText'>{medicineSelectedB}</h1>
           <span>Conflicts:</span>
-          <p>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+          <p>{medicationInteraction}</p>
         </div>
       );
     }
@@ -96,7 +102,7 @@ const DrugInteractionChecker = () => {
                         color: '#7B9B69'
                     }
                   }}
-                  rows={data}
+                  rows={medications}
                   columns={columnsA}
                   initialState={{
                     sorting: {
@@ -141,7 +147,7 @@ const DrugInteractionChecker = () => {
                         color: '#7B9B69'
                     }
                   }}
-                  rows={data}
+                  rows={medications}
                   columns={columnsB}
                   initialState={{
                     sorting: {
