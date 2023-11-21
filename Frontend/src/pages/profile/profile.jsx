@@ -23,7 +23,8 @@ const Profile = () => {
     const fetchProfileData = async () => {
       try {
         // For testing purposes, set patient_id to 3 until the JVT token is implemented
-        const response = await fetch('/profile/2'); 
+        const storedUserId  = sessionStorage.getItem('userId')
+        const response = await fetch('/profile/'+storedUserId.toString()); 
         const data = await response.json();
         // Assume that data.date_of_birth is the date string
         const parsedDate = new Date(data.date_of_birth);
@@ -57,7 +58,7 @@ const Profile = () => {
   const handleSave = async () => {
     if (validateForm()) {
       try {
-        const response = await fetch(`/profile/${formData.patient_id}`, {
+        const response = await fetch(`/profile/${formData.user_id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',

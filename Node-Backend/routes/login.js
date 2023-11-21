@@ -23,12 +23,17 @@ router.post('/', async (req, res) => {
             id: queryresult.rows[0].user_id,
             email: queryresult.rows[0].email,
           }, process.env.JWTTOK, {expiresIn: "120",});
+          const FNameQue = 'SELECT first_name FROM patient WHERE email = $1 UNION  SELECT first_name FROM pharmacist WHERE email = $1';
+          const FNameQueresult = await db.query(FNameQue, [email]);
+          const LNameQue = 'SELECT last_name FROM patient WHERE email = $1 UNION  SELECT last_name FROM pharmacist WHERE email = $1';
+          const LNameQueresult = await db.query(LNameQue, [email]);
           const datatosend = {
             id: queryresult.rows[0].user_id,
             email: queryresult.rows[0].email,
+            Name:  FNameQueresult.rows[0].first_name + " " +LNameQueresult.rows[0].last_name,
             token: jwtToken
           };
-          return res.json({id:queryresult.rows[0].user_id, email:queryresult.rows[0].email, token:jwtToken });
+          return res.json({datatosend});
         }
     }
     

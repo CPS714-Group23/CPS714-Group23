@@ -67,8 +67,10 @@ function Login() {
             const data = await response.json();
             setValidationErrors({});
             setErrorMessage(null); 
-            sessionStorage.setItem('token', data.token)
-            sessionStorage.setItem('userId', data.id.toString());
+            console.log(data.datatosend)
+            sessionStorage.setItem('token', data.datatosend.token)
+            sessionStorage.setItem('userId', data.datatosend.id.toString());
+            sessionStorage.setItem('Name', data.datatosend.Name.toString());
             navigate('/home')
             window.location.reload();
           } else {
