@@ -9,7 +9,7 @@ router.post('/', async (req, res) => {
     const { email, password } = req.body;
 
     // Check if a patient with the same email and password exists
-    const checkEmailQuery = 'SELECT password FROM users WHERE email = $1';
+    const checkEmailQuery = 'SELECT * FROM users WHERE email = $1';
     const queryresult = await db.query(checkEmailQuery, [email]);
 
     if (queryresult.rows.length == 0) {
@@ -22,7 +22,12 @@ router.post('/', async (req, res) => {
           const jwtToken =  jwt.sign({
             id: queryresult.rows[0].user_id,
             email: queryresult.rows[0].email,
-          }, process.env.JWTTOK);
+          }, process.env.JWTTOK, {expiresIn: "120",});
+          const datatosend = {
+            id: queryresult.rows[0].user_id,
+            email: queryresult.rows[0].email,
+            token: jwtToken
+          };
           return res.json({id:queryresult.rows[0].user_id, email:queryresult.rows[0].email, token:jwtToken });
         }
     }

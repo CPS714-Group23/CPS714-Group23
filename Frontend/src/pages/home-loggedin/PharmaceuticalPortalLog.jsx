@@ -5,7 +5,9 @@ import { Button } from '@mui/material';
 import { Link } from 'react-router-dom';
 import './PharmaceuticalPortal.css';
 
-const PharmaceuticalPortal = () => {
+const PharmaceuticalPortalLog = () => {
+  //const storedUserId = sessionStorage.getItem('userId');
+  //console.log(storedUserId);
   return (
     <Grid container spacing={8} className='pharma-container'>
       <Grid item lg={5} className='content'>
@@ -24,4 +26,4 @@ const PharmaceuticalPortal = () => {
   );
 }
 
-export default PharmaceuticalPortal;
+export default PharmaceuticalPortalLog;

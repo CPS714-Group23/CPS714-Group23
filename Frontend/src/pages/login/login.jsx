@@ -65,11 +65,12 @@ function Login() {
               password: '',
             });
             const data = await response.json();
-            console.log(data.token);
             setValidationErrors({});
             setErrorMessage(null); 
             sessionStorage.setItem('token', data.token)
-            navigate("/home");
+            sessionStorage.setItem('userId', data.id.toString());
+            navigate('/home')
+            window.location.reload();
           } else {
             const data = await response.json();
             if (data.error) {

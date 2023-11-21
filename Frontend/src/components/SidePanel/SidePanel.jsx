@@ -23,7 +23,7 @@ import './SidePanel.css';
 
 //const drawerWidth = 240;
 const menuItemsTop = [
-  {name: 'Dashboard', icon: <Dashboard />, path: '/1'}
+  {name: 'Dashboard', icon: <Dashboard />, path: '/home'}
 ];
 
 const menuItemsMiddle = [
@@ -36,7 +36,7 @@ const menuItemsMiddle = [
 
 const menuItemsBottom = [
   {name: 'Profile', icon: <Person />, path: '/profile'},
-  {name: 'Sign out', icon: <SignoutBtn />, path: '/8'}
+  {name: 'Sign out', icon: <SignoutBtn />, path: '/logout'}
 ]
 
 const openedMixin = (theme) => ({
