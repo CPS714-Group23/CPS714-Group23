@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Typography, Grid, Box, Avatar, IconButton, Button } from '@mui/material';
+import {
+  Container,
+  Typography,
+  Grid,
+  Box,
+  Avatar,
+  IconButton,
+  Button,
+} from '@mui/material';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import PersonIcon from '@mui/icons-material/Person';
 import './profile.css';
@@ -12,25 +20,35 @@ const Profile = () => {
     address: true,
     phone_number: true,
     date_of_birth: true,
+    license_number: true,
+    hire_date: true,
   };
 
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({});
   const [savedData, setSavedData] = useState({});
   const [validationErrors, setValidationErrors] = useState({});
- 
+
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        // For testing purposes, set patient_id to 3 until the JVT token is implemented
-        const response = await fetch('/profile/2'); 
+        const storedUserId = sessionStorage.getItem('userId');
+        const response = await fetch(`/profile/${storedUserId}`);
         const data = await response.json();
-        // Assume that data.date_of_birth is the date string
-        const parsedDate = new Date(data.date_of_birth);
-        // Extract the date portion
-        const dateOnly = parsedDate.toISOString().split('T')[0];
-        // Update the formData
-        data.date_of_birth = dateOnly;
+
+        if (data.date_of_birth) {
+          const parsedDateOfBirth = new Date(data.date_of_birth);
+          const dateOfBirthOnly = parsedDateOfBirth
+            .toISOString()
+            .split('T')[0];
+          data.date_of_birth = dateOfBirthOnly;
+        }
+
+        if (data.hire_date) {
+          const parsedHireDate = new Date(data.hire_date);
+          const hireDateOnly = parsedHireDate.toISOString().split('T')[0];
+          data.hire_date = hireDateOnly;
+        }
 
         setFormData(data);
         setSavedData(data);
@@ -41,6 +59,8 @@ const Profile = () => {
 
     fetchProfileData();
   }, []);
+
+  const isPharmacist = formData.user_id && formData.user_id.startsWith('p');
 
   const toggleEditing = () => {
     setIsEditing(!isEditing);
@@ -53,11 +73,11 @@ const Profile = () => {
       [name]: value,
     });
   };
-  
+
   const handleSave = async () => {
     if (validateForm()) {
       try {
-        const response = await fetch(`/profile/${formData.patient_id}`, {
+        const response = await fetch(`/profile/${formData.user_id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -69,7 +89,10 @@ const Profile = () => {
           setSavedData(formData);
           toggleEditing();
         } else {
-          console.error('Error saving profile changes:', response.statusText);
+          console.error(
+            'Error saving profile changes:',
+            response.statusText
+          );
         }
       } catch (error) {
         console.error('Error saving profile changes:', error);
@@ -80,6 +103,7 @@ const Profile = () => {
   const handleCancel = () => {
     if (isEditing) {
       setFormData(savedData);
+      setValidationErrors({});
     }
     toggleEditing();
   };
@@ -92,6 +116,11 @@ const Profile = () => {
   const isPhoneNumberValid = (phone) => {
     const phonePattern = /^\d{3}-\d{3}-\d{4}$/;
     return phonePattern.test(phone);
+  };
+
+  const isLicenseNumberValid = (licenseNumber) => {
+    const licenseNumberPattern = /^\d{10}$/;
+    return licenseNumberPattern.test(licenseNumber);
   };
 
   const validateForm = () => {
@@ -107,6 +136,10 @@ const Profile = () => {
       errors.email = 'Invalid email address';
     }
 
+    if (isPharmacist && !isLicenseNumberValid(formData.license_number)) {
+      errors.license_number = 'License number must be 10 digits';
+    }
+
     setValidationErrors(errors);
 
     // Return true if there are no validation errors
@@ -115,9 +148,9 @@ const Profile = () => {
 
   return (
     <Container maxWidth="md">
-      <Grid container spacing={3} style={{  marginTop: '-110px', transform: 'scale(0.87)' }}>
+      <Grid container spacing={3} style={{ marginTop: '-110px', transform: 'scale(0.87)', marginLeft: '-180px' }}>
         <Grid item xs={12}>
-          <Typography variant="h4" gutterBottom style={{ color: '#7B9B69', fontSize: '35px', fontWeight: '800', fontFamily: 'Times New Roman', transform: 'translateY(60px)'}}>
+          <Typography variant="h4" gutterBottom style={{ color: '#7B9B69', fontSize: '35px', fontWeight: '800', fontFamily: 'Times New Roman', transform: 'translateY(60px)' }}>
             Hi, {formData.first_name}!
           </Typography>
           <Typography variant="h4" gutterBottom>
@@ -127,7 +160,6 @@ const Profile = () => {
           </Typography>
         </Grid>
         <Grid item xs={12} md={8}>
-          
           <Box mt={4} display="flex" justifyContent="left">
             {isEditing ? (
               <>
@@ -139,9 +171,8 @@ const Profile = () => {
                   padding: '8px 15px',
                   cursor: 'pointer',
                   textTransform: 'capitalize',
-                  transform: 'translateY(750px)',
+                  transform: isPharmacist ? 'translateY(880px)' : 'translateY(790px)',
                   fontSize: '15px',
-                
                 }}>
                   Save Changes
                 </Button>
@@ -153,7 +184,7 @@ const Profile = () => {
                   padding: '0px 15px',
                   cursor: 'pointer',
                   textTransform: 'capitalize',
-                  transform: 'translateY(752px)',
+                  transform: isPharmacist ? 'translateY(880px)' : 'translateY(790px)',
                   fontSize: '15px',
                   marginLeft: '12px',
                 }}>
@@ -162,7 +193,9 @@ const Profile = () => {
               </>
             ) : (
               <IconButton color="primary" aria-label="edit" onClick={toggleEditing} sx={{ color: 'green', fontSize: '17px', fontWeight: '700', transform: 'translateX(-7px)' }}>
-                <span style={{ color: '#7B9B69' }}>Patient details</span>
+                <span style={{ color: '#7B9B69' }}>
+                  {isPharmacist ? 'Pharmacist details' : 'Patient details'}
+                </span>
                 <EditTwoToneIcon sx={{ color: '#7B9B69', fontSize: '20px' }} />
               </IconButton>
             )}
@@ -281,7 +314,6 @@ const Profile = () => {
                     width: '230px',
                   }}
                 />
-                
               </div>
             ) : (
               <span style={{ color: '#7B9B69', fontSize: '14px', fontWeight: '700' }}>
@@ -311,7 +343,11 @@ const Profile = () => {
                   }}
                 />
                 {validationErrors.email && (
-                  <span style={{ color: 'red', fontSize: '12px' }}>{validationErrors.email}</span>
+                  <div style={{ marginTop: '-10px' }}>
+                    <span style={{ color: 'red', fontSize: '12px' }}>
+                      {validationErrors.email}
+                    </span>
+                  </div>
                 )}
               </div>
             ) : (
@@ -321,35 +357,102 @@ const Profile = () => {
             )}
           </div>
           <br />
+          {!isPharmacist && (
+            <div>
+              <span style={{ color: 'gray' }}>Home Address</span>
+              {requiredFields.address && !formData.address && (
+                <span style={{ color: 'red' }}> *</span>
+              )}
+              <br />
+              {isEditing ? (
+                <div>
+                  <input
+                    type="text"
+                    id="address"
+                    name="address"
+                    placeholder="1 Smith Road"
+                    value={formData.address}
+                    onChange={handleChange}
+                    style={{
+                      borderBottom: '2px solid #7B9B69',
+                      width: '230px',
+                    }}
+                  />
+                </div>
+              ) : (
+                <span style={{ color: '#7B9B69', fontSize: '14px', fontWeight: '700' }}>
+                  {formData.address}
+                </span>
+              )}
+            </div>
+          )}
+          {isPharmacist && (
+            <div>
+              <span style={{ color: 'gray' }}>License Number</span>
+              {requiredFields.license_number && !formData.license_number && (
+                <span style={{ color: 'red' }}> *</span>
+              )}
+              <br />
+              {isEditing ? (
+                <div>
+                  <input
+                    type="text"
+                    id="licenseNumber"
+                    name="license_number"
+                    placeholder="1234567895"
+                    value={formData.license_number}
+                    onChange={handleChange}
+                    style={{
+                      borderBottom: '2px solid #7B9B69',
+                      width: '230px',
+                    }}
+                  />
+                  {validationErrors.license_number && (
+                    <div style={{ marginTop: '-10px' }}>
+                      <span style={{ color: 'red', fontSize: '12px' }}>
+                        {validationErrors.license_number}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <span style={{ color: '#7B9B69', fontSize: '14px', fontWeight: '700' }}>
+                  {formData.license_number}
+                </span>
+              )}
+            </div>
+          )}
+          <br></br>
+          {isPharmacist && (
+            <div>
+              <span style={{ color: 'gray' }}>Hire Date</span>
+              {requiredFields.hire_date && !formData.hire_date && (
+                <span style={{ color: 'red' }}> *</span>
+              )}
+              <br />
+              {isEditing ? (
+                <div>
+                  <input
+                    type="date"
+                    id="hireDate"
+                    name="hire_date"
+                    value={formData.hire_date}
+                    onChange={handleChange}
+                    style={{
+                      borderBottom: '2px solid #7B9B69',
+                      width: '230px',
+                    }}
+                  />
+                </div>
+              ) : (
+                <span style={{ color: '#7B9B69', fontSize: '14px', fontWeight: '700' }}>
+                  {formData.hire_date}
+                </span>
+              )}
+            </div>
+          )}
           <div>
-            <span style={{ color: 'gray' }}>Home address</span>
-            {requiredFields.address && !formData.address && (
-              <span style={{ color: 'red' }}> *</span>
-            )}
-            <br />
-            {isEditing ? (
-              <div>
-                <input
-                  type="text"
-                  id="address"
-                  name="address"
-                  placeholder="1 Smith Road"
-                  value={formData.address}
-                  onChange={handleChange}
-                  style={{
-                    borderBottom: '2px solid #7B9B69',
-                    width: '230px',
-                  }}
-                />
-              </div>
-            ) : (
-              <span style={{ color: '#7B9B69', fontSize: '14px', fontWeight: '700' }}>
-                {formData.address}
-              </span>
-            )}
-          </div>
-          <br />
-          <div>
+            {isPharmacist && <br />}
             <span style={{ color: 'gray' }}>Phone number</span>
             {requiredFields.phone_number && !formData.phone_number && (
               <span style={{ color: 'red' }}> *</span>
@@ -370,7 +473,11 @@ const Profile = () => {
                   }}
                 />
                 {validationErrors.phone_number && (
-                  <span style={{ color: 'red', fontSize: '12px' }}>{validationErrors.phone_number}</span>
+                  <div style={{ marginTop: '-10px' }}>
+                    <span style={{ color: 'red', fontSize: '12px' }}>
+                      {validationErrors.phone_number}
+                    </span>
+                  </div>
                 )}
               </div>
             ) : (
@@ -379,11 +486,11 @@ const Profile = () => {
               </span>
             )}
           </div>
-          <div className={`green-square ${isEditing ? 'editing' : ''}`}></div>
+          <div className={`green-square ${isPharmacist ? 'pharmacist' : ''} ${isEditing && isPharmacist ? 'pharmacist-editing' : isEditing ? 'editing' : ''}`}></div>
         </Grid>
       </Grid>
     </Container>
   );
 };
 
-export default Profile;
+export default Profile; 

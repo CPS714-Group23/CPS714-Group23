@@ -26,6 +26,10 @@ function SignUp() {
   const isFieldEmpty = (field) => {
     return field === '';
   };
+
+  const alertStyle = {
+    width: '90%' 
+  };
   
   const isEmailValid = (email) => {
     const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
@@ -185,7 +189,11 @@ function SignUp() {
       <div className="square"></div>
       <form onSubmit={handleSubmit}>
         {successMessage && (
-          <Alert severity="success" onClose={handleSuccessAlertClose}>
+          <Alert
+            severity="success"
+            onClose={handleSuccessAlertClose}
+            sx={alertStyle}
+          >
             {successMessage}
           </Alert>
         )}
