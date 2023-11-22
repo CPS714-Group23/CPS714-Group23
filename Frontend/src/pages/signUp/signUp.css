@@ -2,8 +2,8 @@
   background-color: #7B9B69;
   width: 489%;
   height: 84vh;
-  border-top-right-radius: 20px;
-  border-bottom-right-radius: 20px;
+  border-top-right-radius: 50px;
+  border-bottom-right-radius: 50px;
   position: absolute;
   transform: translateY(-5%); 
   left: -500%;
@@ -84,7 +84,7 @@ input:focus:not([read-only]) {
     align-items: center;
     max-width: 700px;
     margin: auto;
-    transform: translateX(16%);
+    transform: translateX(12%);
     margin-bottom: 20px;
     margin-top: 40px; 
   }
@@ -95,7 +95,7 @@ input:focus:not([read-only]) {
     align-items: center;
     max-width: 700px;
     margin: auto;
-    transform: translateX(58%);
+    transform: translateX(60%);
     margin-bottom: 20px;
     margin-top: 40px; 
   }
