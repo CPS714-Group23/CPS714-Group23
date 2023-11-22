@@ -202,7 +202,7 @@ export default function SidePanel() {
           display: open ? 'block' : 'none',
           marginTop: '0.6em',
           fontSize: '1.2em'
-        }}>John Doe</span>
+        }}>{sessionStorage.getItem('Name')}</span>
       </div>
       <List>
           {menuItemsBottom.map((item) => (

@@ -32,15 +32,14 @@ const Profile = () => {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
+
         const storedUserId = sessionStorage.getItem('userId');
         const response = await fetch(`/profile/${storedUserId}`);
         const data = await response.json();
 
         if (data.date_of_birth) {
           const parsedDateOfBirth = new Date(data.date_of_birth);
-          const dateOfBirthOnly = parsedDateOfBirth
-            .toISOString()
-            .split('T')[0];
+          const dateOfBirthOnly = parsedDateOfBirth.toISOString().split('T')[0];
           data.date_of_birth = dateOfBirthOnly;
         }
 

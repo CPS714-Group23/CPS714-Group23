@@ -11,7 +11,7 @@ function PortalNav() {
 
   const menu = [
     { name: 'Profile', path: '/profile'},
-    { name: 'Sign out', path: '/'}
+    { name: 'Sign out', path: '/logout'}
   ];
   
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -39,13 +39,14 @@ function PortalNav() {
           <span className='customerSupport'>
               Customer support<strong>+1 800 123 4567</strong>
           </span>
-          <Button component={Link} to="/" className='messageButton'>
+          {/* <Button component={Link} to="/" className='messageButton'>
               <MessageBtn />
           </Button>
           <Button component={Link} to="/" className='notificationButton'>
               <NotificationBtn />
           </Button>
-          <span className='welcomeUser'>Hi, John!</span>
+          */}
+          <span className='welcomeUser'>Hi, {(sessionStorage.getItem('Name'))}!</span>
 
           <Button
               id="basic-button"
