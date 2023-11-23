@@ -38,6 +38,12 @@ router.put('/:user_id', async (req, res) => {
     let queryParams;
 
     if (user_id.startsWith('c')) {
+      const patientEmailExists = await db.query('SELECT user_id FROM users WHERE email = $1 AND user_id != $2', [updatedProfile.email, user_id]);
+      if (patientEmailExists.rows.length > 0) {
+        const errorMessage = 'Email already exists';
+        return res.status(401).json({ error: errorMessage });
+      }
+
       query = 'UPDATE patient SET first_name=$1, last_name=$2, gender=$3, address=$4, date_of_birth=$5, phone_number=$6, email=$7 WHERE user_id=$8';
       queryParams = [
         updatedProfile.first_name,
@@ -50,6 +56,12 @@ router.put('/:user_id', async (req, res) => {
         user_id
       ];
     } else if (user_id.startsWith('p')) {
+      const pharmacistEmailExists = await db.query('SELECT user_id FROM users WHERE email = $1 AND user_id != $2', [updatedProfile.email, user_id]);
+      if (pharmacistEmailExists.rows.length > 0) {
+        const errorMessage = 'Email already exists';
+        return res.status(401).json({ error: errorMessage });
+      }
+
       query = 'UPDATE pharmacist SET first_name=$1, last_name=$2, gender=$3, date_of_birth=$4, email=$5, phone_number=$6, license_number=$7, hire_date=$8 WHERE user_id=$9';
       queryParams = [
         updatedProfile.first_name,
@@ -62,6 +74,10 @@ router.put('/:user_id', async (req, res) => {
         updatedProfile.hire_date,
         user_id
       ];
+
+      const updateUserEmailQuery = 'UPDATE users SET email=$1 WHERE user_id=$2';
+      const updateUserEmailParams = [updatedProfile.email, user_id];
+      await db.query(updateUserEmailQuery, updateUserEmailParams);
     } else {
       return res.status(404).json({ error: 'Invalid user_id' });
     }

@@ -1,7 +1,9 @@
+// Import relevant dependencies
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, Typography, IconButton, Collapse } from '@mui/material';
 import { CiPillsBottle1 } from 'react-icons/ci';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import axios from 'axios'; // Import axios for making API requests
 import './drugSupplyTrack.css';
 
 const DrugSupplyTracker = () => {
@@ -9,44 +11,10 @@ const DrugSupplyTracker = () => {
   const [expandedCard, setExpandedCard] = useState(null);
 
   useEffect(() => {
-    setMedications([
-      {
-        id: 1,
-        title: 'Medication 1',
-        drug_strength: '500mg',
-        dosage: '1-0-1',
-        duration: '3',
-        receipt_number: 'Receipt 1',
-        date_issued: 'Date 1',
-        doctor_name: 'Doctor 1',
-        hospital_name: 'Hospital 1',
-        hospital_address: 'Address 1',
-      },
-      {
-        id: 2,
-        title: 'Medication 2',
-        drug_strength: '250mg',
-        dosage: '0-1-0',
-        duration: '1',
-        receipt_number: 'Receipt 2',
-        date_issued: 'Date 2',
-        doctor_name: 'Doctor 2',
-        hospital_name: 'Hospital 2',
-        hospital_address: 'Address 2',
-      },
-      {
-        id: 3,
-        title: 'Medication 3',
-        drug_strength: '500mg',
-        dosage: '1-0-1',
-        duration: '3',
-        receipt_number: 'Receipt 2',
-        date_issued: 'Date 2',
-        doctor_name: 'Doctor 2',
-        hospital_name: 'Hospital 2',
-        hospital_address: 'Address 2',
-      }
-    ]);
+  
+    axios.get(`/drug_supply_tracker/1`)
+      .then(response => setMedications(response.data))
+      .catch(error => console.error('Error fetching drug tracker data:', error));
   }, []);
 
   const handleExpandCard = (index) => {
@@ -194,7 +162,9 @@ const DrugSupplyTracker = () => {
                     style={{ padding: '0', margin: '0' }}
                     onClick={() => handleExpandCard(index)}
                     aria-expanded={expandedCard === index}
-                  />
+                  >
+                    <ArrowForwardIcon style={{ fontSize: '30px', color: '#7B9B69' }} />
+                  </IconButton>
                 </div>
               </div>
 
