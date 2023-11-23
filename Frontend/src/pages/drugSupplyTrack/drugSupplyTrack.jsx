@@ -9,44 +9,17 @@ const DrugSupplyTracker = () => {
   const [expandedCard, setExpandedCard] = useState(null);
 
   useEffect(() => {
-    setMedications([
-      {
-        id: 1,
-        title: 'Medication 1',
-        drug_strength: '500mg',
-        dosage: '1-0-1',
-        duration: '3',
-        receipt_number: 'Receipt 1',
-        date_issued: 'Date 1',
-        doctor_name: 'Doctor 1',
-        hospital_name: 'Hospital 1',
-        hospital_address: 'Address 1',
-      },
-      {
-        id: 2,
-        title: 'Medication 2',
-        drug_strength: '250mg',
-        dosage: '0-1-0',
-        duration: '1',
-        receipt_number: 'Receipt 2',
-        date_issued: 'Date 2',
-        doctor_name: 'Doctor 2',
-        hospital_name: 'Hospital 2',
-        hospital_address: 'Address 2',
-      },
-      {
-        id: 3,
-        title: 'Medication 3',
-        drug_strength: '500mg',
-        dosage: '1-0-1',
-        duration: '3',
-        receipt_number: 'Receipt 2',
-        date_issued: 'Date 2',
-        doctor_name: 'Doctor 2',
-        hospital_name: 'Hospital 2',
-        hospital_address: 'Address 2',
-      }
-    ]);
+    const storedUserId = sessionStorage.getItem('userId');
+
+    fetch(`/drug_supply_tracker/${storedUserId}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Server Error');
+        }
+        return response.json();
+      })
+      .then(data => setMedications(data))
+      .catch(error => console.error('Error fetching drug tracker data:', error));
   }, []);
 
   const handleExpandCard = (index) => {
@@ -95,14 +68,14 @@ const DrugSupplyTracker = () => {
                 <div>
                   <Typography variant="h6">{medication.title}</Typography>
                   <Typography variant="body1" style={{ wordSpacing: '2em' }}>
-                    Strength   Does    Duration
+                    Strength   Dose    Duration
                   </Typography>
                   <Typography variant="body1" style={{ wordSpacing: '2em' }}>
                     {medication.drug_strength} {' '}
-                    <span style={{ marginLeft: '10px' }}>{medication.dosage}</span> {' '}
+                    <span style={{ marginLeft: '10px' }}>{medication.dose}</span> {' '}
                     {medication.duration}
                     <span style={{ marginLeft: '10px' }}>
-                      {medication.duration === '1' ? 'month' : 'months'}
+                      {medication.duration === '1' ? 'week' : 'weeks'}
                     </span>{' '}
                   </Typography>
                 </div>
@@ -129,12 +102,12 @@ const DrugSupplyTracker = () => {
 
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ textAlign: 'center', marginRight: '10px' }}>
-                  <Typography variant="h4" style={{ fontWeight: 'bold', marginLeft: '38px' }}>50</Typography>
+                  <Typography variant="h4" style={{ fontWeight: 'bold', marginLeft: '38px' }}>{medication.consumed}</Typography>
                   <Typography variant="body1" style={{ marginLeft: '80px' }}>Consumed</Typography>
                 </div>
                 <div style={{ width: '2px', height: '50px', backgroundColor: index === 0 ? 'white' : '#7B9B69' }} />
                 <div style={{ textAlign: 'center', marginLeft: '10px' }}>
-                  <Typography variant="h4" style={{ fontWeight: 'bold', marginRight: '140px' }}>50</Typography>
+                  <Typography variant="h4" style={{ fontWeight: 'bold', marginRight: '140px' }}>{medication.remaining}</Typography>
                   <Typography variant="body1" style={{ marginRight: '100px' }}>Remaining</Typography>
                 </div>
               </div>
@@ -163,20 +136,20 @@ const DrugSupplyTracker = () => {
                 <div>
                   <Typography variant="h6">{medication.title}</Typography>
                   <Typography variant="body1" style={{ wordSpacing: '2em', color: '#acacac' }}>
-                    Strength   Does    Duration
+                    Strength   Dose    Duration
                   </Typography>
                   <Typography variant="body1" style={{ wordSpacing: '2em' }}>
                     {medication.drug_strength} {' '}
-                    <span style={{ marginLeft: '10px' }}>{medication.dosage}</span> {' '}
+                    <span style={{ marginLeft: '10px' }}>{medication.dose}</span> {' '}
                     {medication.duration}
                     <span style={{ marginLeft: '10px' }}>
-                      {medication.duration === '1' ? 'month' : 'months'}
+                      {medication.duration === '1' ? 'week' : 'weeks'}
                     </span>{' '}
                   </Typography>
                   <Typography variant="body1" color={'#acacac'}>
                     Start Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;End Date
                   </Typography>
-                  <Typography variant="body1">2023/04/01&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2023/04/01</Typography>
+                  <Typography variant="body1">{new Date(medication.start_recur).toLocaleDateString('en-CA')}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{new Date(medication.end_recur).toLocaleDateString('en-CA')}</Typography>
                 </div>
               </div>
 
@@ -194,18 +167,20 @@ const DrugSupplyTracker = () => {
                     style={{ padding: '0', margin: '0' }}
                     onClick={() => handleExpandCard(index)}
                     aria-expanded={expandedCard === index}
-                  />
+                  >
+                    <ArrowForwardIcon style={{ fontSize: '30px', color: '#7B9B69' }} />
+                  </IconButton>
                 </div>
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ textAlign: 'center', marginRight: '45px' }}>
-                  <Typography variant="h4" style={{ fontWeight: 'bold', marginLeft: '50px' }}>50</Typography>
+                  <Typography variant="h4" style={{ fontWeight: 'bold', marginLeft: '50px' }}>{medication.consumed}</Typography>
                   <Typography variant="body1" style={{ marginLeft: '90px', color: '#acacac' }}>Consumed</Typography>
                 </div>
                 <div style={{ width: '2px', height: '50px', backgroundColor: '#7B9B69' }} />
                 <div style={{ textAlign: 'center', marginLeft: '50px' }}>
-                  <Typography variant="h4" style={{ fontWeight: 'bold', marginRight: '140px' }}>50</Typography>
+                  <Typography variant="h4" style={{ fontWeight: 'bold', marginRight: '140px' }}>{medication.remaining}</Typography>
                   <Typography variant="body1" style={{ marginRight: '100px', color: '#acacac' }}>Remaining</Typography>
                 </div>
               </div>

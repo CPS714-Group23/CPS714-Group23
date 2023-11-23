@@ -28,6 +28,7 @@ const Profile = () => {
   const [formData, setFormData] = useState({});
   const [savedData, setSavedData] = useState({});
   const [validationErrors, setValidationErrors] = useState({});
+  const [errorMessage, setErrorMessage] = useState(null); 
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -74,6 +75,12 @@ const Profile = () => {
   };
 
   const handleSave = async () => {
+    // Check if first name and last name are not empty
+    if (!formData.first_name || !formData.last_name) {
+      return;
+    }
+  
+    // Continue with other validations
     if (validateForm()) {
       try {
         const response = await fetch(`/profile/${formData.user_id}`, {
@@ -83,26 +90,30 @@ const Profile = () => {
           },
           body: JSON.stringify(formData),
         });
-
+  
         if (response.ok) {
           setSavedData(formData);
           toggleEditing();
         } else {
-          console.error(
-            'Error saving profile changes:',
-            response.statusText
-          );
+          const responseData = await response.json();
+  
+          if (response.status === 401 && responseData.error === 'Email already exists') {
+            setErrorMessage(responseData.error);
+          } else {
+            console.error('Error saving profile changes:', responseData.error);
+          }
         }
       } catch (error) {
         console.error('Error saving profile changes:', error);
       }
     }
   };
-
+  
   const handleCancel = () => {
     if (isEditing) {
       setFormData(savedData);
       setValidationErrors({});
+      setErrorMessage(null);
     }
     toggleEditing();
   };
@@ -135,6 +146,7 @@ const Profile = () => {
       errors.email = 'Invalid email address';
     }
 
+    // validate license number 
     if (isPharmacist && !isLicenseNumberValid(formData.license_number)) {
       errors.license_number = 'License number must be 10 digits';
     }
@@ -345,6 +357,13 @@ const Profile = () => {
                   <div style={{ marginTop: '-10px' }}>
                     <span style={{ color: 'red', fontSize: '12px' }}>
                       {validationErrors.email}
+                    </span>
+                  </div>
+                )}
+                {errorMessage && (
+                  <div style={{ marginTop: '-10px' }}>
+                    <span style={{ color: 'red', fontSize: '12px' }}>
+                      {errorMessage}
                     </span>
                   </div>
                 )}
