@@ -55,6 +55,10 @@ router.put('/:user_id', async (req, res) => {
         updatedProfile.email,
         user_id
       ];
+
+      const updateUserEmailQuery = 'UPDATE users SET email=$1 WHERE user_id=$2';
+      const updateUserEmailParams = [updatedProfile.email, user_id];
+      await db.query(updateUserEmailQuery, updateUserEmailParams);
     } else if (user_id.startsWith('p')) {
       const pharmacistEmailExists = await db.query('SELECT user_id FROM users WHERE email = $1 AND user_id != $2', [updatedProfile.email, user_id]);
       if (pharmacistEmailExists.rows.length > 0) {

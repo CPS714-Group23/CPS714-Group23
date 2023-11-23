@@ -1,9 +1,7 @@
-// Import relevant dependencies
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, Typography, IconButton, Collapse } from '@mui/material';
 import { CiPillsBottle1 } from 'react-icons/ci';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import axios from 'axios'; // Import axios for making API requests
 import './drugSupplyTrack.css';
 
 const DrugSupplyTracker = () => {
@@ -11,9 +9,16 @@ const DrugSupplyTracker = () => {
   const [expandedCard, setExpandedCard] = useState(null);
 
   useEffect(() => {
-  
-    axios.get(`/drug_supply_tracker/1`)
-      .then(response => setMedications(response.data))
+    const storedUserId = sessionStorage.getItem('userId');
+
+    fetch(`/drug_supply_tracker/${storedUserId}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Server Error');
+        }
+        return response.json();
+      })
+      .then(data => setMedications(data))
       .catch(error => console.error('Error fetching drug tracker data:', error));
   }, []);
 
@@ -63,14 +68,14 @@ const DrugSupplyTracker = () => {
                 <div>
                   <Typography variant="h6">{medication.title}</Typography>
                   <Typography variant="body1" style={{ wordSpacing: '2em' }}>
-                    Strength   Does    Duration
+                    Strength   Dose    Duration
                   </Typography>
                   <Typography variant="body1" style={{ wordSpacing: '2em' }}>
                     {medication.drug_strength} {' '}
-                    <span style={{ marginLeft: '10px' }}>{medication.dosage}</span> {' '}
+                    <span style={{ marginLeft: '10px' }}>{medication.dose}</span> {' '}
                     {medication.duration}
                     <span style={{ marginLeft: '10px' }}>
-                      {medication.duration === '1' ? 'month' : 'months'}
+                      {medication.duration === '1' ? 'week' : 'weeks'}
                     </span>{' '}
                   </Typography>
                 </div>
@@ -97,12 +102,12 @@ const DrugSupplyTracker = () => {
 
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ textAlign: 'center', marginRight: '10px' }}>
-                  <Typography variant="h4" style={{ fontWeight: 'bold', marginLeft: '38px' }}>50</Typography>
+                  <Typography variant="h4" style={{ fontWeight: 'bold', marginLeft: '38px' }}>{medication.consumed}</Typography>
                   <Typography variant="body1" style={{ marginLeft: '80px' }}>Consumed</Typography>
                 </div>
                 <div style={{ width: '2px', height: '50px', backgroundColor: index === 0 ? 'white' : '#7B9B69' }} />
                 <div style={{ textAlign: 'center', marginLeft: '10px' }}>
-                  <Typography variant="h4" style={{ fontWeight: 'bold', marginRight: '140px' }}>50</Typography>
+                  <Typography variant="h4" style={{ fontWeight: 'bold', marginRight: '140px' }}>{medication.remaining}</Typography>
                   <Typography variant="body1" style={{ marginRight: '100px' }}>Remaining</Typography>
                 </div>
               </div>
@@ -131,20 +136,20 @@ const DrugSupplyTracker = () => {
                 <div>
                   <Typography variant="h6">{medication.title}</Typography>
                   <Typography variant="body1" style={{ wordSpacing: '2em', color: '#acacac' }}>
-                    Strength   Does    Duration
+                    Strength   Dose    Duration
                   </Typography>
                   <Typography variant="body1" style={{ wordSpacing: '2em' }}>
                     {medication.drug_strength} {' '}
-                    <span style={{ marginLeft: '10px' }}>{medication.dosage}</span> {' '}
+                    <span style={{ marginLeft: '10px' }}>{medication.dose}</span> {' '}
                     {medication.duration}
                     <span style={{ marginLeft: '10px' }}>
-                      {medication.duration === '1' ? 'month' : 'months'}
+                      {medication.duration === '1' ? 'week' : 'weeks'}
                     </span>{' '}
                   </Typography>
                   <Typography variant="body1" color={'#acacac'}>
                     Start Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;End Date
                   </Typography>
-                  <Typography variant="body1">2023/04/01&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2023/04/01</Typography>
+                  <Typography variant="body1">{new Date(medication.start_recur).toLocaleDateString('en-CA')}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{new Date(medication.end_recur).toLocaleDateString('en-CA')}</Typography>
                 </div>
               </div>
 
@@ -170,12 +175,12 @@ const DrugSupplyTracker = () => {
 
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ textAlign: 'center', marginRight: '45px' }}>
-                  <Typography variant="h4" style={{ fontWeight: 'bold', marginLeft: '50px' }}>50</Typography>
+                  <Typography variant="h4" style={{ fontWeight: 'bold', marginLeft: '50px' }}>{medication.consumed}</Typography>
                   <Typography variant="body1" style={{ marginLeft: '90px', color: '#acacac' }}>Consumed</Typography>
                 </div>
                 <div style={{ width: '2px', height: '50px', backgroundColor: '#7B9B69' }} />
                 <div style={{ textAlign: 'center', marginLeft: '50px' }}>
-                  <Typography variant="h4" style={{ fontWeight: 'bold', marginRight: '140px' }}>50</Typography>
+                  <Typography variant="h4" style={{ fontWeight: 'bold', marginRight: '140px' }}>{medication.remaining}</Typography>
                   <Typography variant="body1" style={{ marginRight: '100px', color: '#acacac' }}>Remaining</Typography>
                 </div>
               </div>
