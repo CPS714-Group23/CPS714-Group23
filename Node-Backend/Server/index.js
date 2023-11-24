@@ -5,6 +5,7 @@ const loginRoute = require("../routes/login");
 const schedulerRoute = require("../routes/scheduler");
 const profileRoute = require("../routes/profile");
 const drugSupplyTrackerRoute = require("../routes/drugSupplyTracker");
+const drugInteractionCheckerRoute = require("../routes/druginteractionchecker");
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use("/login", loginRoute);
 app.use("/api/scheduler", schedulerRoute);
 app.use("/profile", profileRoute); 
 app.use("/drug_supply_tracker", drugSupplyTrackerRoute);
+app.use("/drug_interaction_checker", drugInteractionCheckerRoute);
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
