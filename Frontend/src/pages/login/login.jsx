@@ -50,7 +50,40 @@ function Login() {
     e.preventDefault();
     if (isFormDataComplete()) {
       if (validateForm()) {
-        
+        try {
+          const response = await fetch('/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+          });
+
+          if (response.ok) {
+            setFormData({
+              email: '',
+              password: '',
+            });
+            const data = await response.json();
+            setValidationErrors({});
+            setErrorMessage(null); 
+            console.log(data.datatosend)
+            sessionStorage.setItem('token', data.datatosend.token)
+            sessionStorage.setItem('userId', data.datatosend.id.toString());
+            sessionStorage.setItem('Name', data.datatosend.Name.toString());
+            navigate('/home')
+            window.location.reload();
+          } else {
+            const data = await response.json();
+            if (data.error) {
+              setErrorMessage(data.error);
+            } else {
+              console.error('Request failed with status:', response.status);
+            }
+          }
+        } catch (error) {
+          console.error('Request error:', error);
+        }
       }
     } else {
       const requiredFieldErrors = {};
