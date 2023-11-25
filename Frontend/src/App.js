@@ -86,8 +86,8 @@ function App() {
         <Route exact path='/drug-supply-tracker' element={<PrivateRoute/>}>
           <Route exact path='/drug-supply-tracker' element={<DrugSupplyTracker/>} />
         </Route>
-        <Route exact path='/side-effect-reporting' element={<PrivateRoute/>}>
-          <Route exact path='/side-effect-reporting' element={<DrugSideEffectReport/>} />
+        <Route exact path='/side-effect-report' element={<PrivateRoute/>}>
+          <Route exact path='/side-effect-report' element={<DrugSideEffectReport/>} />
         </Route>
         <Route exact path='/logout' element={<LogOutPrivateRoute/>}>
           <Route exact path='/logout' element={<LogOut/>} />

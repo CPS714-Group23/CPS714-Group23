@@ -8,7 +8,7 @@ const columnsA = [
   { field: 'drug_name', headerName: 'Medicine Name', width: 200 }
 ];
 
-const DrugInteractionChecker = () => {
+const DrugSideEffectReport = () => {
 
   const [medications, setMedications] = useState([]);
   const [MedicationCommonUses, setMedicationCommonUses] = useState([]);
@@ -19,7 +19,7 @@ const DrugInteractionChecker = () => {
   
 
   useEffect(() => {
-    fetch('/side-effect-reporting', {
+    fetch('/side-effect-report', {
       method: 'GET',
       headers: {
           'Content-Type': 'application/json',
@@ -32,7 +32,7 @@ const DrugInteractionChecker = () => {
       return response.json();
     })
     .then(data => setMedications(data))
-    .catch(error => console.error('Error fetching drug interaction data:', error));
+    .catch(error => console.error('Error fetching drug data:', error));
 }, []);
 
   const onCompare = async (drugAId) => {
@@ -42,11 +42,24 @@ const DrugInteractionChecker = () => {
     }
     else {
       setIsSelected(true);
-      setMedicineSelectedA(medications.find((item) => item.id === drugAId).name);
-      //replace with fetching interaction from the backend, using medication selection A as inputs
-      setMedicationCommonUses("Text explaining the Common Uses of " + medicineSelectedA + ".\n Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.");
-      setMedicationSideEffects("Text explaining the Side Effects of " + medicineSelectedA + ".\n Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.");
-
+      setMedicineSelectedA(medications.find((item) => item.id === drugAId).drug_name);
+      fetch('/side-effect-report/' + medications.find((item) => item.id === drugAId).drug_name, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Server Error');
+        }
+        return response.json();
+      })
+      .then(data => {
+        setMedicationCommonUses(data[0].common_uses);
+        setMedicationSideEffects(data[0]["Side Effects"].join(" | "));
+      })
+      .catch(error => console.error('Error fetching drug data:', error));
     }
   }
 
@@ -71,7 +84,7 @@ const DrugInteractionChecker = () => {
     <Grid container spacing={8} className='pharma-container'>
       <Grid item lg={12} className='content'>
           <div className='text-container'>
-            <h1 className="header-text">Side Effect Reporting</h1>
+            <h1 className="header-text">Side Effect Report</h1>
           </div>
           <Grid container spacing={8} className='pharma-container'>
             <Grid item lg={6} className='image-container'>
@@ -130,4 +143,4 @@ const DrugInteractionChecker = () => {
   );
 }
 
-export default DrugInteractionChecker;
+export default DrugSideEffectReport;

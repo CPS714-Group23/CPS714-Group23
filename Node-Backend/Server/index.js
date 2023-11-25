@@ -32,7 +32,7 @@ app.use("/profile", profileRoute);
 app.use("/drug_supply_tracker", drugSupplyTrackerRoute);
 app.use("/drug_interaction_checker", drugInteractionCheckerRoute);
 //app.use("/noti", notifRoute); 
-app.use("/side-effect-reporting", drugSideEffectReport);
+app.use("/side-effect-report", drugSideEffectReport);
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);

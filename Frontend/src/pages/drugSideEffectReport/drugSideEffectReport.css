@@ -42,6 +42,7 @@ body {
 }
 
 .compareContainer p {
+    font-size: 1.2em;
     color: #707070;
     font-family: 'Montserrat';
 }
