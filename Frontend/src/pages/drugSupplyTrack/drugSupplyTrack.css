@@ -9,3 +9,8 @@
     border-radius: 50px;
     text-align: center;
 }
+
+button:focus {
+    outline: none;
+    background-color: inherit; 
+}

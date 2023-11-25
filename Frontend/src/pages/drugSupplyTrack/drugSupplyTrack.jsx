@@ -28,8 +28,9 @@ const DrugSupplyTracker = () => {
 
   return (
     <div>
+      <div style={{ marginTop: '10px' }}></div>
       <div className="green__tile"></div>
-      <Typography variant="h4" style={{ color: '#7B9B69', fontWeight: 'bold', marginBottom: '20px', fontFamily: 'Times New Roman, serif' }}>
+      <Typography variant="h3" style={{ color: '#7B9B69', fontWeight: 'bold', marginBottom: '20px', fontFamily: 'Times New Roman, serif' }}>
         Drug Supply Tracker
       </Typography>
       {medications.map((medication, index) => (
@@ -41,9 +42,10 @@ const DrugSupplyTracker = () => {
               color: index === 0 ? 'white' : '#7B9B69',
               fontFamily: 'Times New Roman, serif',
               transform: 'scale(0.9)',
-              width: '450px',
+              width: '400px',
               marginRight: '10px',
               position: 'relative',
+              marginBottom: expandedCard === index ? '25px' : '10px',
             }}
           >
             <CardContent>
@@ -62,126 +64,82 @@ const DrugSupplyTracker = () => {
                       backgroundColor: index === 0 ? '#7B9B69' : 'white',
                       borderRadius: '50%',
                       padding: '8px',
+                      marginTop: '-60px'
                     }}
                   />
                 </div>
                 <div>
-                  <Typography variant="h6">{medication.title}</Typography>
-                  <Typography variant="body1" style={{ wordSpacing: '2em' }}>
-                    Strength   Dose    Duration
+                  <Typography variant="h5">{medication.title}</Typography>
+                  <Typography variant="body1" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gridColumnGap: '1em' }}>
+                    <span>Strength</span>
+                    <span>Dosage</span>
+                    <span>Duration</span>
                   </Typography>
-                  <Typography variant="body1" style={{ wordSpacing: '2em' }}>
-                    {medication.drug_strength} {' '}
-                    <span style={{ marginLeft: '10px' }}>{medication.dose}</span> {' '}
-                    {medication.duration}
-                    <span style={{ marginLeft: '10px' }}>
-                      {medication.duration === '1' ? 'week' : 'weeks'}
-                    </span>{' '}
+                  <Typography variant="body1" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gridColumnGap: '1em' }}>
+                    <span>{medication.drug_strength}</span>
+                    <span>{medication.dosage}</span>
+                    <span>{`${medication.duration} ${medication.duration === '1' ? 'week' : 'weeks'}`}</span>
+                  </Typography>
+                  <Typography variant="body1" style={{marginTop:'10px',  fontSize: '17px'  }}>
+                    Date Issued: {new Date(medication.start_recur).toLocaleDateString('en-CA')}
+                  </Typography>
+                  <Typography variant="body1" style={{marginTop:'5px', fontSize: '17px' }}>
+                    Receipt #{medication.receipt_number}
                   </Typography>
                 </div>
               </div>
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  width: '100%',
-                  margin: '9px 0',
-                }}
-              >
-                <div style={{ flex: '1' }} />
-                <div style={{ padding: '0', margin: '9px 0', position: 'absolute', right: '20px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', width: '100%', margin: '9px 0' }}>
+                <div style={{ flex: '1', marginBottom: expandedCard === index ? '14px' : '0' }} />
+                <div style={{ padding: '0', margin: '9px 0', position: 'absolute', right: '10px' }}>
                   <IconButton
-                    style={{ padding: '0', margin: '0' }}
+                    style={{ padding: '0', margin: '0', marginTop: '-130px', }}
                     onClick={() => handleExpandCard(index)}
                     aria-expanded={expandedCard === index}
+                    disableTouchRipple
                   >
-                    <ArrowForwardIcon style={{ fontSize: '30px', color: index === 0 ? 'white' : '#7B9B69' }} />
+                    <ArrowForwardIcon
+                      style={{
+                        fontSize: '35px',
+                        color: index === 0 ? 'white' : '#7B9B69',
+                      }}
+                    />
                   </IconButton>
-                </div>
-              </div>
-
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ textAlign: 'center', marginRight: '10px' }}>
-                  <Typography variant="h4" style={{ fontWeight: 'bold', marginLeft: '38px' }}>{medication.consumed}</Typography>
-                  <Typography variant="body1" style={{ marginLeft: '80px' }}>Consumed</Typography>
-                </div>
-                <div style={{ width: '2px', height: '50px', backgroundColor: index === 0 ? 'white' : '#7B9B69' }} />
-                <div style={{ textAlign: 'center', marginLeft: '10px' }}>
-                  <Typography variant="h4" style={{ fontWeight: 'bold', marginRight: '140px' }}>{medication.remaining}</Typography>
-                  <Typography variant="body1" style={{ marginRight: '100px' }}>Remaining</Typography>
                 </div>
               </div>
             </CardContent>
           </Card>
 
           <Collapse in={expandedCard === index}>
-            <CardContent>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <div
-                  style={{
-                    borderRadius: '50%',
-                    padding: '8px',
-                  }}
-                >
+            <CardContent style={{ marginTop: '30px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', maxHeight: '120px' }}>
+                <div style={{ borderRadius: '50%', padding: '8px' }}>
                   <CiPillsBottle1
                     size={90}
                     color="#7B9B69"
-                    style={{
-                      backgroundColor: 'white',
-                      borderRadius: '50%',
-                      padding: '8px',
-                    }}
+                    style={{ backgroundColor: 'white', borderRadius: '50%', padding: '8px', marginTop: '-130px' }}
                   />
                 </div>
                 <div>
                   <Typography variant="h6">{medication.title}</Typography>
-                  <Typography variant="body1" style={{ wordSpacing: '2em', color: '#acacac' }}>
-                    Strength   Dose    Duration
+                  <Typography variant="body1" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gridColumnGap: '1em' }}>
+                    <span>Strength</span>
+                    <span>Dosage</span>
+                    <span>Duration</span>
                   </Typography>
-                  <Typography variant="body1" style={{ wordSpacing: '2em' }}>
-                    {medication.drug_strength} {' '}
-                    <span style={{ marginLeft: '10px' }}>{medication.dose}</span> {' '}
-                    {medication.duration}
-                    <span style={{ marginLeft: '10px' }}>
-                      {medication.duration === '1' ? 'week' : 'weeks'}
-                    </span>{' '}
+                  <Typography variant="body1" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gridColumnGap: '1em' }}>
+                    <span>{medication.drug_strength}</span>
+                    <span>{medication.dosage}</span>
+                    <span>{`${medication.duration} ${medication.duration === '1' ? 'week' : 'weeks'}`}</span>
                   </Typography>
-                  <Typography variant="body1" color={'#acacac'}>
-                    Start Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;End Date
+                  <Typography variant="body1" style={{ color: '#acacac', marginTop: '10px' }}>
+                    Hospital Name: <span style={{ color: '#7B9B69' }}>{medication.hospital_name}</span>
                   </Typography>
-                  <Typography variant="body1">{new Date(medication.start_recur).toLocaleDateString('en-CA')}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{new Date(medication.end_recur).toLocaleDateString('en-CA')}</Typography>
-                </div>
-              </div>
-
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  width: '100%',
-                  margin: '10px 0',
-                }}
-              >
-                <div style={{ flex: '1', backgroundColor: 'white', height: '1px' }} />
-                <div style={{ padding: '0', margin: '9px 0', position: 'absolute', right: '20px' }}>
-                  <IconButton
-                    style={{ padding: '0', margin: '0' }}
-                    onClick={() => handleExpandCard(index)}
-                    aria-expanded={expandedCard === index}
-                  >
-                    <ArrowForwardIcon style={{ fontSize: '30px', color: '#7B9B69' }} />
-                  </IconButton>
-                </div>
-              </div>
-
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ textAlign: 'center', marginRight: '45px' }}>
-                  <Typography variant="h4" style={{ fontWeight: 'bold', marginLeft: '50px' }}>{medication.consumed}</Typography>
-                  <Typography variant="body1" style={{ marginLeft: '90px', color: '#acacac' }}>Consumed</Typography>
-                </div>
-                <div style={{ width: '2px', height: '50px', backgroundColor: '#7B9B69' }} />
-                <div style={{ textAlign: 'center', marginLeft: '50px' }}>
-                  <Typography variant="h4" style={{ fontWeight: 'bold', marginRight: '140px' }}>{medication.remaining}</Typography>
-                  <Typography variant="body1" style={{ marginRight: '100px', color: '#acacac' }}>Remaining</Typography>
+                  <Typography variant="body1" style={{ color: '#acacac' }}>
+                    Hospital Address: <span style={{ color: '#7B9B69' }}>{medication.hospital_address}</span>
+                  </Typography>
+                  <Typography variant="body1" style={{ color: '#acacac' }}>
+                    Doctor Name: <span style={{ color: '#7B9B69' }}>{medication.doctor_name}</span>
+                  </Typography>
                 </div>
               </div>
             </CardContent>
