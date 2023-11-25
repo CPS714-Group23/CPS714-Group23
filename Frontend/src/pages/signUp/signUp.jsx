@@ -375,7 +375,7 @@ function SignUp() {
                   type="text"
                   id="licenseNumber"
                   name="licenseNumber"
-                  placeholder="Enter license number"
+                  placeholder="1234567895"
                   value={formData.licenseNumber}
                   onChange={handleChange}
                   style={{
