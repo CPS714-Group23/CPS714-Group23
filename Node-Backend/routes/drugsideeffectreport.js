@@ -24,7 +24,6 @@ router.get('/:medicine', async (req, res) => {
   
     try {
       const commonusesDrugResult = await db.query('SELECT drug_name, common_uses, "Side Effects" FROM medication WHERE drug_name = $1', [medicine]);
-      console.log('Common Uses Result:', commonusesDrugResult.rows);
       if (commonusesDrugResult.rows.length === 0) {
         return res.status(404).json({ error: 'Medications not found' });
       }

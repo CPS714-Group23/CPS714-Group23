@@ -15,7 +15,7 @@ const DrugSideEffectReport = () => {
   const [MedicationSideEffects, setMedicationSideEffects] = useState([]);
   const [rowSelectionAModel, setRowSelectionAModel] = useState([]);
   const [medicineSelectedA, setMedicineSelectedA] = useState([]);
-  const [isCompare, setIsSelected] = useState([]);
+  const [isSelect, setIsSelected] = useState([]);
   
 
   useEffect(() => {
@@ -63,13 +63,13 @@ const DrugSideEffectReport = () => {
     }
   }
 
-  const CompareSection = () => {
-    if (isCompare.length === 0 || !isCompare) {
+  const SelectSection = () => {
+    if (isSelect.length === 0 || !isSelect) {
       return <Paper elevation={1} className='image'/>;
     }
     else {
       return (
-        <div className='compareContainer'>
+        <div className='selectContainer'>
           <h1 className='subHeaderText'>{medicineSelectedA}</h1>
           <span>Common Uses:</span>
           <p>{MedicationCommonUses}</p>
@@ -134,7 +134,7 @@ const DrugSideEffectReport = () => {
               </div>
             </Grid>
             <Grid item lg={6} className='image-container'>
-              <CompareSection/>
+              <SelectSection/>
             </Grid>
           </Grid>
       </Grid>
