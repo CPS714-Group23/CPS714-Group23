@@ -8,7 +8,7 @@ const drugSupplyTrackerRoute = require("../routes/drugSupplyTracker");
 const drugInteractionCheckerRoute = require("../routes/druginteractionchecker");
 const medicationsRoute = require('../routes/medications');
 //const notifRoute = require("../routes/notification");
-const drugSideEffectReport = require("../routes/drugsideeffectreport")
+const drugSideEffectReport = require("../routes/drugsideeffectreport");
 
 const app = express();
 
