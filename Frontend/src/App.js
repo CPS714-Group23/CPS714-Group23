@@ -16,6 +16,7 @@ import Scheduler from './pages/scheduler/scheduler';
 import PrescriptionSubmit from './pages/prescription-submit/prescriptionsubmit';
 import DrugInteractionChecker from './pages/drugInteractionChecker/drugInteractionChecker';
 import DrugSupplyTracker from './pages/drugSupplyTrack/drugSupplyTrack';
+import DrugSideEffectReport from './pages/drugSideEffectReport/drugSideEffectReport';
 import PrivateRoute from './privateroute';
 import UnPrivateRoute from './unprivateroute';
 import LogOutPrivateRoute from './logoutprivateroute';
@@ -84,6 +85,9 @@ function App() {
         </Route>
         <Route exact path='/drug-supply-tracker' element={<PrivateRoute/>}>
           <Route exact path='/drug-supply-tracker' element={<DrugSupplyTracker/>} />
+        </Route>
+        <Route exact path='/side-effect-reporting' element={<PrivateRoute/>}>
+          <Route exact path='/side-effect-reporting' element={<DrugSideEffectReport/>} />
         </Route>
         <Route exact path='/logout' element={<LogOutPrivateRoute/>}>
           <Route exact path='/logout' element={<LogOut/>} />

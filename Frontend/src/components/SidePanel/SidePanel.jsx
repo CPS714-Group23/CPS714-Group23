@@ -31,7 +31,7 @@ const menuItemsMiddle = [
   {name: 'Drug supply tracker', icon: <PrescriptionBottle />, path: '/drug-supply-tracker'},
   {name: 'Prescription', icon: <RxFile />, path: '/prescriptionsubmit'},
   {name: 'Drug interaction checker', icon: <Analytics />, path: '/drug-interaction-checker'},
-  {name: 'Side effect reporting', icon: <Analytics />, path: '/6'},
+  {name: 'Side effect reporting', icon: <Analytics />, path: '/side-effect-reporting'},
 ];
 
 const menuItemsBottom = [
