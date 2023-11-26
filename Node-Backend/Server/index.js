@@ -5,7 +5,7 @@ const loginRoute = require("../routes/login");
 const schedulerRoute = require("../routes/scheduler");
 const profileRoute = require("../routes/profile");
 const drugSupplyTrackerRoute = require("../routes/drugSupplyTracker");
-const notifRoute = require("../routes/notification");
+//const notifRoute = require("../routes/notification");
 const app = express();
 
 require('dotenv').config();
@@ -25,7 +25,7 @@ app.use("/login", loginRoute);
 app.use("/api/scheduler", schedulerRoute);
 app.use("/profile", profileRoute); 
 app.use("/drug_supply_tracker", drugSupplyTrackerRoute);
-app.use("/noti", notifRoute); 
+//app.use("/noti", notifRoute); 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
