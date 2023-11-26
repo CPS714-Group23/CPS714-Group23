@@ -75,12 +75,14 @@ const Profile = () => {
   };
 
   const handleSave = async () => {
-    // Check if first name and last name are not empty
     if (!formData.first_name || !formData.last_name) {
       return;
     }
+
+    if (!isPharmacist && !formData.address) {
+      return;
+    }
   
-    // Continue with other validations
     if (validateForm()) {
       try {
         const response = await fetch(`/profile/${formData.user_id}`, {
@@ -158,8 +160,14 @@ const Profile = () => {
   };
 
   return (
-    <Container maxWidth="md">
-      <Grid container spacing={3} style={{ marginTop: '-110px', transform: 'scale(0.87)', marginLeft: '-180px' }}>
+    <Container
+      style={{
+        position: isEditing ? 'relative' : 'fixed',
+        transform: isEditing ? 'translateX(110px)' : 'translateX(110px)',
+        zIndex: isEditing ? 'auto' : 1,
+      }}
+    >
+      <Grid container spacing={3} style={{ marginTop: '-110px', transform: 'scale(0.92)', marginLeft: '-180px' }}>
         <Grid item xs={12}>
           <Typography variant="h4" gutterBottom style={{ color: '#7B9B69', fontSize: '35px', fontWeight: '800', fontFamily: 'Times New Roman', transform: 'translateY(60px)' }}>
             Hi, {formData.first_name}!
