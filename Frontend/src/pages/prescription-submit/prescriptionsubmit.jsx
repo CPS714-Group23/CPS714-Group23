@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import "./prescriptionsubmit.css";
 
 function PrescriptionSubmit() {
+  const userId = sessionStorage.getItem('userId');
+
   const initialFormData = {
     receiptNumber: "",
     dateIssued: "",
@@ -24,7 +26,7 @@ function PrescriptionSubmit() {
         const response = await fetch("http://localhost:3001/api/medications");
         if (response.ok) {
           const meds = await response.json();
-          console.log("Fetched Medications: ", meds); // Debugging line
+          console.log("Fetched Medications: ", meds);
           setMedications(meds);
         } else {
           throw new Error("Failed to fetch medications");
@@ -51,6 +53,7 @@ function PrescriptionSubmit() {
     const endRecur = endDate.toISOString().split("T")[0];
 
     const newEvent = {
+      patientId: userId,
       title: event.target.title.value,
       drugStrength: event.target.drugStrength.value,
       dosage: event.target.dosage.value,
