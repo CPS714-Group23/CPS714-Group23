@@ -23,7 +23,7 @@ function PrescriptionSubmit() {
   useEffect(() => {
     const fetchMedications = async () => {
       try {
-        const response = await fetch("http://localhost:3001/api/medications");
+        const response = await fetch("/api/medications");
         if (response.ok) {
           const meds = await response.json();
           console.log("Fetched Medications: ", meds);
@@ -67,7 +67,7 @@ function PrescriptionSubmit() {
     };
 
     try {
-      const response = await fetch("http://localhost:3001/api/scheduler/add", {
+      const response = await fetch("/api/scheduler/add", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newEvent),

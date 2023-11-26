@@ -11,9 +11,7 @@ function Scheduler() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:3001/api/scheduler/events/${userId}` // Updated URL
-        );
+        const response = await fetch(`/api/scheduler/events/${userId}`);
         if (response.ok) {
           const fetchedEvents = await response.json();
           const transformedEvents = fetchedEvents.map((event) => ({
