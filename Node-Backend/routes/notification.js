@@ -1,26 +1,25 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../db'); 
-const client = require('twilio')('AC28416c6be03f3b835b1f7eb6d6088865', '6a1749ad7948d54cb968e5c9663ae9e0'); //need account SID and token
+const client = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_TOKEN);
 const nodemailer = require('nodemailer');
 
 router.post('/', async (req, res) => {
 
     try {
       const email_data = req.body;
-      console.log(email_data.userId);
-      console.log(email_data);
+     
         
       // Check if a patient with the same email and password exists
       const checkEmailQuery = 'SELECT * FROM users WHERE user_id = $1';
       const queryresult = await db.query(checkEmailQuery, [email_data.userId]);
       
-      console.log(queryresult.rows[0].email);
+ 
 
       
       const PidQue = 'SELECT patient_id, first_name, last_name FROM patient WHERE user_id = $1';
       const PidQueresult = await db.query(PidQue, [email_data.userId]);
-      console.log(PidQueresult.rows[0].patient_id);
+ 
       const MedQue = 'SELECT title, drug_strength, dosage, start_recur, end_recur, duration FROM patientmedication WHERE patient_id = $1';
       const MedQueresult = await db.query(MedQue, [PidQueresult.rows[0].patient_id]);
       console.log(MedQueresult.rows[0]);
@@ -34,9 +33,10 @@ router.post('/', async (req, res) => {
         start_date = formatDateString(MedQueresult.rows[i].start_recur);
         end_date = formatDateString(MedQueresult.rows[i].end_recur);
         if(!isTodayBetweenDates(start_date, end_date)){
-          flag++;
+       
           
         }else{
+        flag++;
         const datatosend = {
             title: MedQueresult.rows[i].title,
             drugstrength: MedQueresult.rows[i].drug_strength,
@@ -49,10 +49,10 @@ router.post('/', async (req, res) => {
         }
         
       }
-         
+      if(flag != 0){ 
       sendTextMessage(msg1 + msg2);
       sendEmail(queryresult.rows[0].email, 'Prescriptions', msg1 + msg2);
-  
+      }
             
       return res.status(200);
        
