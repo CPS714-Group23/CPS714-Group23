@@ -5,6 +5,7 @@ const loginRoute = require("../routes/login");
 const schedulerRoute = require("../routes/scheduler");
 const profileRoute = require("../routes/profile");
 const drugSupplyTrackerRoute = require("../routes/drugSupplyTracker");
+const medicationsRoute = require('../routes/medications');
 //const notifRoute = require("../routes/notification");
 const app = express();
 
@@ -23,6 +24,7 @@ app.get("/api", (req, res) => {
 app.use("/signup", signupRoute);
 app.use("/login", loginRoute);
 app.use("/api/scheduler", schedulerRoute);
+app.use("/api/medications", medicationsRoute);
 app.use("/profile", profileRoute); 
 app.use("/drug_supply_tracker", drugSupplyTrackerRoute);
 //app.use("/noti", notifRoute); 
