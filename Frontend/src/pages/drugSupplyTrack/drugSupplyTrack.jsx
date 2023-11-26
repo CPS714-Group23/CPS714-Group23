@@ -28,7 +28,6 @@ const DrugSupplyTracker = () => {
 
   return (
     <div>
-      <div style={{ marginTop: '10px' }}></div>
       <div className="green__tile"></div>
       <Typography variant="h3" style={{ color: '#7B9B69', fontWeight: 'bold', marginBottom: '20px', fontFamily: 'Times New Roman, serif' }}>
         Drug Supply Tracker
@@ -42,7 +41,7 @@ const DrugSupplyTracker = () => {
               color: index === 0 ? 'white' : '#7B9B69',
               fontFamily: 'Times New Roman, serif',
               transform: 'scale(0.9)',
-              width: '400px',
+              width: '420px',
               marginRight: '10px',
               position: 'relative',
               marginBottom: expandedCard === index ? '25px' : '10px',
@@ -73,15 +72,15 @@ const DrugSupplyTracker = () => {
                   <Typography variant="body1" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gridColumnGap: '1em' }}>
                     <span>Strength</span>
                     <span>Dosage</span>
-                    <span>Duration</span>
+                    <span>Start Date</span>
                   </Typography>
                   <Typography variant="body1" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gridColumnGap: '1em' }}>
                     <span>{medication.drug_strength}</span>
                     <span>{medication.dosage}</span>
-                    <span>{`${medication.duration} ${medication.duration === '1' ? 'week' : 'weeks'}`}</span>
+                    <span>{new Date(medication.start_recur).toLocaleDateString('en-CA')}</span>
                   </Typography>
                   <Typography variant="body1" style={{marginTop:'10px',  fontSize: '17px'  }}>
-                    Date Issued: {new Date(medication.start_recur).toLocaleDateString('en-CA')}
+                    Date Issued: {new Date(medication.date_issued).toLocaleDateString('en-CA')}
                   </Typography>
                   <Typography variant="body1" style={{marginTop:'5px', fontSize: '17px' }}>
                     Receipt #{medication.receipt_number}
@@ -124,12 +123,12 @@ const DrugSupplyTracker = () => {
                   <Typography variant="body1" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gridColumnGap: '1em' }}>
                     <span>Strength</span>
                     <span>Dosage</span>
-                    <span>Duration</span>
+                    <span>End Date</span>
                   </Typography>
                   <Typography variant="body1" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gridColumnGap: '1em' }}>
                     <span>{medication.drug_strength}</span>
                     <span>{medication.dosage}</span>
-                    <span>{`${medication.duration} ${medication.duration === '1' ? 'week' : 'weeks'}`}</span>
+                    <span>{new Date(medication.end_recur).toLocaleDateString('en-CA')}</span>
                   </Typography>
                   <Typography variant="body1" style={{ color: '#acacac', marginTop: '10px' }}>
                     Hospital Name: <span style={{ color: '#7B9B69' }}>{medication.hospital_name}</span>
