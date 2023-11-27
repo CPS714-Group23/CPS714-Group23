@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./prescriptionsubmit.css";
 
 function PrescriptionSubmit() {
+  const userId = sessionStorage.getItem('userId');
+
   const initialFormData = {
     receiptNumber: "",
     dateIssued: "",
@@ -15,8 +17,29 @@ function PrescriptionSubmit() {
     hospitalAddress: "",
   };
 
+  const [medications, setMedications] = useState([]);
   const [formData, setFormData] = useState(initialFormData);
-  const navigate = useNavigate(); 
+
+  useEffect(() => {
+    const fetchMedications = async () => {
+      try {
+        const response = await fetch("/api/medications");
+        if (response.ok) {
+          const meds = await response.json();
+          console.log("Fetched Medications: ", meds);
+          setMedications(meds);
+        } else {
+          throw new Error("Failed to fetch medications");
+        }
+      } catch (error) {
+        console.error("Error fetching medications:", error);
+      }
+    };
+
+    fetchMedications();
+  }, []);
+
+  const navigate = useNavigate();
 
   const handleAddFormSubmit = async (event) => {
     event.preventDefault();
@@ -30,6 +53,7 @@ function PrescriptionSubmit() {
     const endRecur = endDate.toISOString().split("T")[0];
 
     const newEvent = {
+      patientId: userId,
       title: event.target.title.value,
       drugStrength: event.target.drugStrength.value,
       dosage: event.target.dosage.value,
@@ -43,7 +67,7 @@ function PrescriptionSubmit() {
     };
 
     try {
-      const response = await fetch("http://localhost:3001/api/scheduler/add", {
+      const response = await fetch("/api/scheduler/add", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newEvent),
@@ -237,19 +261,23 @@ function PrescriptionSubmit() {
                 <span style={{ color: "red" }}>*</span>
               ) : null}
             </label>
-            <input
-              type="text"
+            <select
               id="title"
               name="title"
-              placeholder="Medicine A"
               value={formData.title}
               onChange={handleChange}
-              style={{
-                borderBottom: "2px solid #7B9B69",
-              }}
+              style={{ borderBottom: "2px solid #7B9B69", display: "block" }}
               required
-            />
+            >
+              <option value="">Select a medication</option>
+              {medications.map((medication, index) => (
+                <option key={index} value={medication}>
+                  {medication}
+                </option>
+              ))}
+            </select>
           </div>
+
           <div className="form-group">
             <label htmlFor="drugStrength" style={{ color: "#7B9B69" }}>
               Strength

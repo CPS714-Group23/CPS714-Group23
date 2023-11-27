@@ -19,6 +19,38 @@ function PortalNav() {
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+  /*edit this(event.currentTarget)
+  */
+ //send email on button click
+  const handleClick_notif = async (e) => {
+    e.preventDefault();
+    const email_data = {userId:sessionStorage.getItem('userId')};
+    try {
+      const response = await fetch('/noti', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(email_data),
+       
+      });
+
+      if (response.ok) {
+       
+      } else {
+        const data = await response.json();
+        if (data.error) {
+          //setErrorMessage(data.error);
+        
+        } else {
+          console.error('Request failed with status:', response.status);
+        }
+      }
+    } catch (error) {
+      console.error('Request error:', error);
+    }
+  };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -39,12 +71,13 @@ function PortalNav() {
           <span className='customerSupport'>
               Customer support<strong>+1 800 123 4567</strong>
           </span>
+          <Button onClick={handleClick_notif} component={Link} to="/" className='notificationButton'>
+              <NotificationBtn />
+          </Button>
           {/* <Button component={Link} to="/" className='messageButton'>
               <MessageBtn />
           </Button>
-          <Button component={Link} to="/" className='notificationButton'>
-              <NotificationBtn />
-          </Button>
+       
           */}
           <span className='welcomeUser'>Hi, {(sessionStorage.getItem('Name'))}!</span>
 
@@ -73,5 +106,6 @@ function PortalNav() {
     </div>
   );
 }
+
 
 export default PortalNav;
