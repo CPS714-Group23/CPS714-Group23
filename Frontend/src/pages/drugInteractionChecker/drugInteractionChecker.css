@@ -32,7 +32,7 @@ body {
 }
 
 .compareContainer {
-    margin-top: 4em
+    margin-top: 10em
 }
 
 .subHeaderText {
@@ -41,9 +41,15 @@ body {
     margin-bottom: .5em;
 }
 
+.conflictContainer {
+    display: flex;
+    align-items: center;
+}
+
 .compareContainer span {
     display: block;
     margin-top: 3em;
+    margin-bottom: 1em;
     color: #000;
     font-size: 1.2em;
     font-family: 'Montserrat';
@@ -52,6 +58,9 @@ body {
 .compareContainer p {
     color: #707070;
     font-family: 'Montserrat';
+    font-size: 1.5em;
+    margin: 0;
+    margin-left: 0.5em;
 }
 
 div .image {

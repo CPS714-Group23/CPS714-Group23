@@ -3,19 +3,21 @@ import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import { Button } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
+import CheckCircle from '@mui/icons-material/CheckCircle';
+import Cancel from '@mui/icons-material/Cancel';
 import './drugInteractionChecker.css';
 
 const columnsA = [
-  { field: 'name', headerName: 'Drug A', width: 200 }
+  { field: 'drug_name', headerName: 'Drug A', width: 200 }
 ];
 const columnsB = [
-  { field: 'name', headerName: 'Drug B', width: 200 }
+  { field: 'drug_name', headerName: 'Drug B', width: 200 }
 ];
 
 const DrugInteractionChecker = () => {
 
   const [medications, setMedications] = useState([]);
-  const [medicationInteraction, setMedicationInteraction] = useState([]);
+  const [isConflicting, setIsConflicting] = useState([]);
   const [rowSelectionAModel, setRowSelectionAModel] = useState([]);
   const [rowSelectionBModel, setRowSelectionBModel] = useState([]);
   const [medicineSelectedA, setMedicineSelectedA] = useState([]);
@@ -23,31 +25,53 @@ const DrugInteractionChecker = () => {
   const [isCompare, setIsCompare] = useState([]);
   
   useEffect(() => {
-    //replace with fetching medications from the backend
-    setMedications([
-      { id: 1, name: 'MedicineA' },
-      { id: 2, name: 'MedicineB' },
-      { id: 3, name: 'MedicineC' },
-      { id: 4, name: 'MedicineD' },
-      { id: 5, name: 'MedicineE' },
-      { id: 6, name: 'MedicineF' },
-      { id: 7, name: 'MedicineG' },
-      { id: 8, name: 'MedicineH' },
-      { id: 9, name: 'MedicineI' }
-    ]);
+
+    fetch('/drug_interaction_checker/', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Server Error');
+        }
+        return response.json();
+      })
+      .then(data => setMedications(data))
+      .catch(error => console.error('Error fetching drug interaction data:', error));
   }, []);
 
-  const onCompare = (drugAId, drugBId) => {
-    
+  const onCompare = async (drugAId, drugBId) => {
     if (drugAId === undefined || drugBId === undefined || drugAId === drugBId) {
       setIsCompare(false);
     }
     else {
       setIsCompare(true);
-      setMedicineSelectedA(medications.find((item) => item.id === drugAId).name);
-      setMedicineSelectedB(medications.find((item) => item.id === drugBId).name);
-      //replace with fetching interaction from the backend, using medication selection A and B as inputs
-      setMedicationInteraction("Text explaining the interaction between " + medications.find((item) => item.id === drugAId).name + " and " + medications.find((item) => item.id === drugBId).name + ".\n Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.");
+      setMedicineSelectedA(medications.find((item) => item.id === drugAId).drug_name);
+      setMedicineSelectedB(medications.find((item) => item.id === drugBId).drug_name);
+
+      fetch('/drug_interaction_checker/' + medications.find((item) => item.id === drugAId).drug_name, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Server Error');
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data[0].conflicting_drug === medications.find((item) => item.id === drugBId).drug_name) {
+          setIsConflicting(true);
+        }
+        else {
+          setIsConflicting(false);
+        }
+      })
+      .catch(error => console.error('Error fetching conflicting drug data:', error));
     }
   }
 
@@ -56,14 +80,32 @@ const DrugInteractionChecker = () => {
       return <Paper elevation={1} className='image'/>;
     }
     else {
-      return (
-        <div className='compareContainer'>
-          <h1 className='subHeaderText'>{medicineSelectedA}</h1>
-          <h1 className='subHeaderText'>{medicineSelectedB}</h1>
-          <span>Conflicts:</span>
-          <p>{medicationInteraction}</p>
-        </div>
-      );
+      if (isConflicting === true) {
+        return (
+          <div className='compareContainer'>
+            <h1 className='subHeaderText'>{medicineSelectedA}</h1>
+            <h1 className='subHeaderText'>{medicineSelectedB}</h1>
+            <span>Conflicts:</span>
+            <div className='conflictContainer'>
+              <Cancel style={{ fontSize: '50px' }}></Cancel>
+              <p>Do not take both drugs together</p>
+            </div>
+          </div>
+        )
+      }
+      else {
+        return (
+          <div className='compareContainer'>
+            <h1 className='subHeaderText'>{medicineSelectedA}</h1>
+            <h1 className='subHeaderText'>{medicineSelectedB}</h1>
+            <span>Conflicts:</span>
+            <div className='conflictContainer'>
+              <CheckCircle style={{ fontSize: '50px' }}></CheckCircle>
+              <p>No conflicts exists</p>
+            </div>
+          </div>
+        );
+      }
     }
   }
 
