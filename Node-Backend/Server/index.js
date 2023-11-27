@@ -7,7 +7,7 @@ const profileRoute = require("../routes/profile");
 const drugSupplyTrackerRoute = require("../routes/drugSupplyTracker");
 const drugInteractionCheckerRoute = require("../routes/druginteractionchecker");
 const medicationsRoute = require('../routes/medications');
-//const notifRoute = require("../routes/notification");
+const notifRoute = require("../routes/notification");
 const drugSideEffectReport = require("../routes/drugsideeffectreport");
 
 const app = express();
@@ -31,7 +31,7 @@ app.use("/api/medications", medicationsRoute);
 app.use("/profile", profileRoute); 
 app.use("/drug_supply_tracker", drugSupplyTrackerRoute);
 app.use("/drug_interaction_checker", drugInteractionCheckerRoute);
-//app.use("/noti", notifRoute); 
+app.use("/noti", notifRoute); 
 app.use("/side-effect-report", drugSideEffectReport);
 
 app.listen(PORT, () => {

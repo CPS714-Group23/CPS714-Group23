@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+require('dotenv').config();
 const db = require('../db'); 
 const client = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_TOKEN);
 const nodemailer = require('nodemailer');
@@ -8,7 +9,8 @@ router.post('/', async (req, res) => {
 
     try {
       const email_data = req.body;
-     
+      console.log("here");
+      console.log(client);
         
       // Check if a patient with the same email and password exists
       const checkEmailQuery = 'SELECT * FROM users WHERE user_id = $1';
@@ -21,7 +23,7 @@ router.post('/', async (req, res) => {
       const PidQueresult = await db.query(PidQue, [email_data.userId]);
  
       const MedQue = 'SELECT title, drug_strength, dosage, start_recur, end_recur, duration FROM patientmedication WHERE patient_id = $1';
-      const MedQueresult = await db.query(MedQue, [PidQueresult.rows[0].patient_id]);
+      const MedQueresult = await db.query(MedQue, [email_data.userId]);
       console.log(MedQueresult.rows[0]);
       var msg1 = "Hello,\n" +PidQueresult.rows[0].first_name + " " +PidQueresult.rows[0].last_name + ".\nYour medication for today is:";
       var msg2 = "";
@@ -44,17 +46,19 @@ router.post('/', async (req, res) => {
             duration: MedQueresult.rows[i].duration,
           
           };
-          msg2 = msg2 + "\n" +datatosend.title +" Strength: "+datatosend.drugstrength + " Dosage: " +datatosend.dosage + " Duration: " +datatosend.duration;
+          msg2 = msg2 + "\n" +datatosend.title +" Strength: "+datatosend.drugstrength + " Dosage: " +datatosend.dosage;
           
         }
         
       }
+      console.log(flag);
       if(flag != 0){ 
       sendTextMessage(msg1 + msg2);
       sendEmail(queryresult.rows[0].email, 'Prescriptions', msg1 + msg2);
+      return res.status(200);
       }
             
-      return res.status(200);
+      return res.status(400);
        
       
       
